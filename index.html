@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Запись на созвон</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #111111);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--tg-theme-hint-color, #777);
+      margin-bottom: 25px;
+    }
+
+    .dates,
+    .times {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+      color: var(--tg-theme-text-color, #111);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button.selected {
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #fff);
+    }
+
+    .summary {
+      padding: 15px;
+      border-radius: 14px;
+      background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+      margin-bottom: 20px;
+    }
+
+    .confirm {
+      width: 100%;
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      border: none;
+      font-weight: bold;
+    }
+
+    .confirm:disabled {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Запись на созвон 👋</h1>
+
+  <div class="subtitle" id="hello">
+    Выбери удобную дату и время
+  </div>
+
+  <h3>Дата</h3>
+
+  <div class="dates">
+    <button class="date" data-date="12 августа">12 августа</button>
+    <button class="date" data-date="13 августа">13 августа</button>
+    <button class="date" data-date="14 августа">14 августа</button>
+    <button class="date" data-date="15 августа">15 августа</button>
+  </div>
+
+  <h3>Время</h3>
+
+  <div class="times">
+    <button class="time" data-time="14:00">14:00</button>
+    <button class="time" data-time="14:30">14:30</button>
+    <button class="time" data-time="15:00">15:00</button>
+    <button class="time" data-time="15:30">15:30</button>
+    <button class="time" data-time="16:00">16:00</button>
+    <button class="time" data-time="16:30">16:30</button>
+  </div>
+
+  <div class="summary">
+    <strong>Твоя запись</strong>
+
+    <p id="selectedDate">Дата: —</p>
+    <p id="selectedTime">Время: —</p>
+  </div>
+
+  <button class="confirm" id="confirm" disabled>
+    Записаться
+  </button>
+
+
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    tg.ready();
+    tg.expand();
+
+    const user = tg.initDataUnsafe?.user;
+
+    if (user?.first_name) {
+      document.getElementById("hello").textContent =
+        `Привет, ${user.first_name}! Выбери удобную дату и время`;
+    }
+
+    let selectedDate = null;
+    let selectedTime = null;
+
+    const confirmButton = document.getElementById("confirm");
+
+    document.querySelectorAll(".date").forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document.querySelectorAll(".date").forEach(btn =>
+          btn.classList.remove("selected")
+        );
+
+        button.classList.add("selected");
+
+        selectedDate = button.dataset.date;
+
+        document.getElementById("selectedDate").textContent =
+          "Дата: " + selectedDate;
+
+        updateButton();
+      });
+
+    });
+
+    document.querySelectorAll(".time").forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document.querySelectorAll(".time").forEach(btn =>
+          btn.classList.remove("selected")
+        );
+
+        button.classList.add("selected");
+
+        selectedTime = button.dataset.time;
+
+        document.getElementById("selectedTime").textContent =
+          "Время: " + selectedTime;
+
+        updateButton();
+      });
+
+    });
+
+    function updateButton() {
+
+      confirmButton.disabled =
+        !(selectedDate && selectedTime);
+
+    }
+
+    confirmButton.addEventListener("click", () => {
+
+      const booking = {
+        date: selectedDate,
+        time: selectedTime,
+        telegram_id: user?.id || null,
+        name: user?.first_name || ""
+      };
+
+      console.log(booking);
+
+      alert(
+        `Ты записан!\n\n${selectedDate}\n${selectedTime}`
+      );
+
+    });
+
+  </script>
+
+</body>
+</html>
