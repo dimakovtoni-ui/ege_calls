@@ -22,6 +22,10 @@
       margin-bottom: 8px;
     }
 
+    h3 {
+      margin-top: 24px;
+    }
+
     .subtitle {
       color: var(--tg-theme-hint-color, #777);
       margin-bottom: 25px;
@@ -32,7 +36,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     button {
@@ -48,25 +52,39 @@
     button.selected {
       background: var(--tg-theme-button-color, #2481cc);
       color: var(--tg-theme-button-text-color, #fff);
+      border-color: transparent;
     }
 
     .summary {
       padding: 15px;
       border-radius: 14px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+      margin-top: 25px;
       margin-bottom: 20px;
     }
 
     .confirm {
       width: 100%;
       background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #ffffff);
+      color: var(--tg-theme-button-text-color, #fff);
       border: none;
       font-weight: bold;
     }
 
     .confirm:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 12px;
+      background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+      margin-top: 15px;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -79,119 +97,368 @@
     Выбери удобную дату и время
   </div>
 
-  <h3>Дата</h3>
-
-  <div class="dates">
-    <button class="date" data-date="12 августа">12 августа</button>
-    <button class="date" data-date="13 августа">13 августа</button>
-    <button class="date" data-date="14 августа">14 августа</button>
-    <button class="date" data-date="15 августа">15 августа</button>
+  <div id="loading" class="message">
+    Загружаю свободные даты...
   </div>
 
-  <h3>Время</h3>
-
-  <div class="times">
-    <button class="time" data-time="14:00">14:00</button>
-    <button class="time" data-time="14:30">14:30</button>
-    <button class="time" data-time="15:00">15:00</button>
-    <button class="time" data-time="15:30">15:30</button>
-    <button class="time" data-time="16:00">16:00</button>
-    <button class="time" data-time="16:30">16:30</button>
+  <div id="error" class="message hidden">
+    Не удалось загрузить расписание.
   </div>
 
-  <div class="summary">
-    <strong>Твоя запись</strong>
+  <div id="bookingContent" class="hidden">
 
-    <p id="selectedDate">Дата: —</p>
-    <p id="selectedTime">Время: —</p>
+    <h3>Дата</h3>
+    <div class="dates" id="dates"></div>
+
+    <div id="timeBlock" class="hidden">
+      <h3>Время</h3>
+      <div class="times" id="times"></div>
+    </div>
+
+    <div class="summary">
+      <strong>Твоя запись</strong>
+
+      <p id="selectedDate">Дата: —</p>
+      <p id="selectedTime">Время: —</p>
+    </div>
+
+    <button class="confirm" id="confirm" disabled>
+      Записаться
+    </button>
+
   </div>
-
-  <button class="confirm" id="confirm" disabled>
-    Записаться
-  </button>
 
 
   <script>
-    const tg = window.Telegram.WebApp;
+    const SUPABASE_URL =
+      "https://kycanipxibndwemdfaon.supabase.co";
 
-    tg.ready();
-    tg.expand();
+    const SUPABASE_KEY =
+      "sb_publishable_6jJtpcJUt5Z2wNB2qfOgTw_t_wxyLQi";
 
-    const user = tg.initDataUnsafe?.user;
+    const TABLE_NAME = "ege_calls";
+
+
+    const tg = window.Telegram?.WebApp;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+
+    const user = tg?.initDataUnsafe?.user;
 
     if (user?.first_name) {
       document.getElementById("hello").textContent =
         `Привет, ${user.first_name}! Выбери удобную дату и время`;
     }
 
+
+    let slots = [];
+
     let selectedDate = null;
     let selectedTime = null;
+    let selectedSlotId = null;
 
-    const confirmButton = document.getElementById("confirm");
 
-    document.querySelectorAll(".date").forEach(button => {
+    const datesContainer =
+      document.getElementById("dates");
 
-      button.addEventListener("click", () => {
+    const timesContainer =
+      document.getElementById("times");
 
-        document.querySelectorAll(".date").forEach(btn =>
-          btn.classList.remove("selected")
-        );
+    const confirmButton =
+      document.getElementById("confirm");
 
-        button.classList.add("selected");
 
-        selectedDate = button.dataset.date;
+    function formatDate(dateString) {
 
-        document.getElementById("selectedDate").textContent =
-          "Дата: " + selectedDate;
+      const date = new Date(dateString + "T00:00:00");
 
-        updateButton();
-      });
-
-    });
-
-    document.querySelectorAll(".time").forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        document.querySelectorAll(".time").forEach(btn =>
-          btn.classList.remove("selected")
-        );
-
-        button.classList.add("selected");
-
-        selectedTime = button.dataset.time;
-
-        document.getElementById("selectedTime").textContent =
-          "Время: " + selectedTime;
-
-        updateButton();
-      });
-
-    });
-
-    function updateButton() {
-
-      confirmButton.disabled =
-        !(selectedDate && selectedTime);
+      return new Intl.DateTimeFormat(
+        "ru-RU",
+        {
+          day: "numeric",
+          month: "long"
+        }
+      ).format(date);
 
     }
 
-    confirmButton.addEventListener("click", () => {
 
-      const booking = {
-        date: selectedDate,
-        time: selectedTime,
-        telegram_id: user?.id || null,
-        name: user?.first_name || ""
-      };
+    function formatTime(timeString) {
 
-      console.log(booking);
+      return timeString.slice(0, 5);
 
-      alert(
-        `Ты записан!\n\n${selectedDate}\n${selectedTime}`
-      );
+    }
 
-    });
+
+    async function loadSlots() {
+
+      try {
+
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
+          `?select=id,slot_date,slot_time,is_available` +
+          `&is_available=eq.true` +
+          `&order=slot_date.asc,slot_time.asc`,
+          {
+            headers: {
+              "apikey": SUPABASE_KEY
+            }
+          }
+        );
+
+
+        if (!response.ok) {
+
+          const errorText = await response.text();
+
+          console.error(
+            "Supabase error:",
+            response.status,
+            errorText
+          );
+
+          throw new Error("Ошибка Supabase");
+
+        }
+
+
+        slots = await response.json();
+
+
+        document
+          .getElementById("loading")
+          .classList.add("hidden");
+
+
+        if (slots.length === 0) {
+
+          document.getElementById("error").textContent =
+            "Сейчас свободных слотов нет.";
+
+          document
+            .getElementById("error")
+            .classList.remove("hidden");
+
+          return;
+
+        }
+
+
+        document
+          .getElementById("bookingContent")
+          .classList.remove("hidden");
+
+
+        renderDates();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        document
+          .getElementById("loading")
+          .classList.add("hidden");
+
+        document
+          .getElementById("error")
+          .classList.remove("hidden");
+
+      }
+
+    }
+
+
+    function renderDates() {
+
+      datesContainer.innerHTML = "";
+
+
+      const uniqueDates = [
+        ...new Set(
+          slots.map(slot => slot.slot_date)
+        )
+      ];
+
+
+      uniqueDates.forEach(date => {
+
+        const button =
+          document.createElement("button");
+
+
+        button.textContent =
+          formatDate(date);
+
+
+        button.dataset.date =
+          date;
+
+
+        button.addEventListener(
+          "click",
+          () => selectDate(date, button)
+        );
+
+
+        datesContainer.appendChild(button);
+
+      });
+
+    }
+
+
+    function selectDate(date, button) {
+
+      selectedDate = date;
+
+      selectedTime = null;
+
+      selectedSlotId = null;
+
+
+      document
+        .querySelectorAll("#dates button")
+        .forEach(btn =>
+          btn.classList.remove("selected")
+        );
+
+
+      button.classList.add("selected");
+
+
+      document.getElementById(
+        "selectedDate"
+      ).textContent =
+        "Дата: " + formatDate(date);
+
+
+      document.getElementById(
+        "selectedTime"
+      ).textContent =
+        "Время: —";
+
+
+      confirmButton.disabled = true;
+
+
+      renderTimes(date);
+
+    }
+
+
+    function renderTimes(date) {
+
+      timesContainer.innerHTML = "";
+
+
+      const dateSlots =
+        slots.filter(
+          slot =>
+            slot.slot_date === date &&
+            slot.is_available === true
+        );
+
+
+      dateSlots.forEach(slot => {
+
+        const button =
+          document.createElement("button");
+
+
+        button.textContent =
+          formatTime(slot.slot_time);
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll("#times button")
+              .forEach(btn =>
+                btn.classList.remove("selected")
+              );
+
+
+            button.classList.add("selected");
+
+
+            selectedTime =
+              slot.slot_time;
+
+
+            selectedSlotId =
+              slot.id;
+
+
+            document.getElementById(
+              "selectedTime"
+            ).textContent =
+              "Время: " +
+              formatTime(slot.slot_time);
+
+
+            confirmButton.disabled =
+              false;
+
+          }
+        );
+
+
+        timesContainer.appendChild(button);
+
+      });
+
+
+      document
+        .getElementById("timeBlock")
+        .classList.remove("hidden");
+
+    }
+
+
+    confirmButton.addEventListener(
+      "click",
+      () => {
+
+        if (!selectedSlotId) {
+          return;
+        }
+
+
+        const booking = {
+          slot_id: selectedSlotId,
+          date: selectedDate,
+          time: selectedTime,
+          telegram_id: user?.id || null,
+          first_name: user?.first_name || "",
+          username: user?.username || ""
+        };
+
+
+        console.log(
+          "Выбранная запись:",
+          booking
+        );
+
+
+        alert(
+          `Вы выбрали:\n\n` +
+          `${formatDate(selectedDate)}\n` +
+          `${formatTime(selectedTime)}`
+        );
+
+      }
+    );
+
+
+    loadSlots();
 
   </script>
 
