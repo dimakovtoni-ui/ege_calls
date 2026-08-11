@@ -39,16 +39,6 @@
       margin-bottom: 24px;
     }
 
-    .nav-button {
-      font-weight: 600;
-    }
-
-    .nav-button.active {
-      background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #ffffff);
-      border-color: transparent;
-    }
-
     .dates,
     .times {
       display: grid;
@@ -58,7 +48,7 @@
 
     button {
       padding: 14px;
-      border: 1px solid rgba(120, 120, 120, 0.25);
+      border: 1px solid rgba(120,120,120,.25);
       border-radius: 12px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
       color: var(--tg-theme-text-color, #111111);
@@ -66,6 +56,7 @@
       cursor: pointer;
     }
 
+    .nav-button.active,
     button.selected {
       background: var(--tg-theme-button-color, #2481cc);
       color: var(--tg-theme-button-text-color, #ffffff);
@@ -85,11 +76,6 @@
       margin-bottom: 16px;
     }
 
-    .summary p,
-    .booking-card p {
-      margin: 8px 0 0;
-    }
-
     .confirm {
       width: 100%;
       border: none;
@@ -100,6 +86,7 @@
 
     .confirm:disabled {
       opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .cancel {
@@ -107,19 +94,12 @@
       margin-top: 16px;
     }
 
-    .success {
-      text-align: center;
-      padding: 24px 16px;
-    }
-
-    .success-title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
     .message {
       margin-top: 16px;
+    }
+
+    .error-message {
+      border: 1px solid rgba(255, 0, 0, 0.2);
     }
 
     .hidden {
@@ -132,125 +112,94 @@
 
   <h1>Созвон с куратором 👋</h1>
 
-  <div class="subtitle" id="hello">
-    Выбери удобное время
+  <div id="hello" class="subtitle">
+    Загружаем данные Telegram...
   </div>
 
-  <div class="navigation">
-    <button id="bookingTab" class="nav-button active">
-      Записаться
-    </button>
-
-    <button id="myBookingTab" class="nav-button">
-      Моя запись
-    </button>
+  <div id="telegramError" class="message error-message hidden">
+    Не удалось получить данные Telegram-пользователя.
+    Закрой это окно и открой Mini App заново через кнопку
+    «Записаться на созвон» в боте.
   </div>
 
+  <div id="appContent">
 
-  <!-- ЗАПИСЬ -->
-
-  <div id="bookingPage">
-
-    <div id="loading" class="message">
-      Загружаю свободные слоты...
-    </div>
-
-    <div id="error" class="message hidden"></div>
-
-    <div id="bookingContent" class="hidden">
-
-      <h3>Дата</h3>
-
-      <div class="dates" id="dates"></div>
-
-      <div id="timeBlock" class="hidden">
-
-        <h3>Время</h3>
-
-        <div class="times" id="times"></div>
-
-      </div>
-
-      <div class="summary">
-
-        <strong>Твоя запись</strong>
-
-        <p id="selectedDate">
-          Дата: —
-        </p>
-
-        <p id="selectedTime">
-          Время: —
-        </p>
-
-      </div>
-
-      <button
-        class="confirm"
-        id="confirm"
-        disabled
-      >
+    <div class="navigation">
+      <button id="bookingTab" class="nav-button active">
         Записаться
       </button>
 
-    </div>
-
-  </div>
-
-
-  <!-- МОЯ ЗАПИСЬ -->
-
-  <div id="myBookingPage" class="hidden">
-
-    <div id="myBookingLoading" class="message">
-      Проверяю твою запись...
-    </div>
-
-    <div
-      id="noBooking"
-      class="message hidden"
-    >
-      У тебя пока нет активной записи.
-    </div>
-
-    <div
-      id="myBookingCard"
-      class="booking-card hidden"
-    >
-
-      <strong>Ближайший созвон</strong>
-
-      <p id="myBookingDate"></p>
-      <p id="myBookingTime"></p>
-
-      <button
-        id="cancelBooking"
-        class="cancel"
-      >
-        Отменить запись
+      <button id="myBookingTab" class="nav-button">
+        Моя запись
       </button>
+    </div>
+
+    <div id="bookingPage">
+
+      <div id="loading" class="message">
+        Загружаю свободные слоты...
+      </div>
+
+      <div id="error" class="message hidden"></div>
+
+      <div id="bookingContent" class="hidden">
+
+        <h3>Дата</h3>
+        <div class="dates" id="dates"></div>
+
+        <div id="timeBlock" class="hidden">
+          <h3>Время</h3>
+          <div class="times" id="times"></div>
+        </div>
+
+        <div class="summary">
+          <strong>Твоя запись</strong>
+
+          <p id="selectedDate">
+            Дата: —
+          </p>
+
+          <p id="selectedTime">
+            Время: —
+          </p>
+        </div>
+
+        <button
+          id="confirm"
+          class="confirm"
+          disabled
+        >
+          Записаться
+        </button>
+
+      </div>
 
     </div>
 
-  </div>
+    <div id="myBookingPage" class="hidden">
 
+      <div id="myBookingLoading" class="message">
+        Проверяю твою запись...
+      </div>
 
-  <!-- УСПЕШНАЯ ЗАПИСЬ -->
+      <div id="noBooking" class="message hidden">
+        У тебя пока нет активной записи.
+      </div>
 
-  <div id="successScreen" class="success hidden">
+      <div id="myBookingCard" class="booking-card hidden">
 
-    <div class="success-title">
-      Запись подтверждена 🎉
+        <strong>Ближайший созвон</strong>
+
+        <p id="myBookingDate"></p>
+        <p id="myBookingTime"></p>
+
+        <button id="cancelBooking" class="cancel">
+          Отменить запись
+        </button>
+
+      </div>
+
     </div>
-
-    <div id="successDate"></div>
-    <div id="successTime"></div>
-
-    <br>
-
-    <button id="openMyBooking">
-      Посмотреть мою запись
-    </button>
 
   </div>
 
@@ -263,10 +212,13 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_6jJtpcJUt5Z2wNB2qfOgTw_t_wxyLQi";
 
-const TABLE_NAME = "ege_calls";
+const TABLE_NAME =
+  "ege_calls";
 
 
-const tg = window.Telegram?.WebApp;
+const tg =
+  window.Telegram?.WebApp;
+
 
 if (tg) {
   tg.ready();
@@ -275,18 +227,66 @@ if (tg) {
 
 
 const user =
-  tg?.initDataUnsafe?.user;
+  tg?.initDataUnsafe?.user || null;
 
 
-if (user?.first_name) {
+console.log(
+  "Telegram initData:",
+  tg?.initData
+);
 
+console.log(
+  "Telegram user:",
+  user
+);
+
+
+/* -------------------------
+   ПРОВЕРКА TELEGRAM
+-------------------------- */
+
+const telegramError =
+  document.getElementById(
+    "telegramError"
+  );
+
+const appContent =
+  document.getElementById(
+    "appContent"
+  );
+
+const hello =
   document.getElementById(
     "hello"
-  ).textContent =
-    `Привет, ${user.first_name}! Выбери удобное время`;
+  );
+
+
+if (!user || !user.id) {
+
+  telegramError.classList.remove(
+    "hidden"
+  );
+
+  appContent.classList.add(
+    "hidden"
+  );
+
+  hello.textContent =
+    "Telegram не передал данные пользователя.";
 
 }
 
+else {
+
+  hello.textContent =
+    `Привет, ${user.first_name || "ученик"}! Выбери удобное время`;
+
+}
+
+
+/* -------------------------
+   СОСТОЯНИЕ
+-------------------------- */
 
 let slots = [];
 
@@ -298,19 +298,30 @@ let myBooking = null;
 
 
 const datesContainer =
-  document.getElementById("dates");
+  document.getElementById(
+    "dates"
+  );
 
 const timesContainer =
-  document.getElementById("times");
+  document.getElementById(
+    "times"
+  );
 
 const confirmButton =
-  document.getElementById("confirm");
+  document.getElementById(
+    "confirm"
+  );
 
 
-function formatDate(dateString) {
+function formatDate(
+  dateString
+) {
 
   const date =
-    new Date(dateString + "T00:00:00");
+    new Date(
+      dateString +
+      "T00:00:00"
+    );
 
   return new Intl.DateTimeFormat(
     "ru-RU",
@@ -324,14 +335,27 @@ function formatDate(dateString) {
 }
 
 
-function formatTime(timeString) {
+function formatTime(
+  timeString
+) {
 
-  return timeString.slice(0, 5);
+  return timeString.slice(
+    0,
+    5
+  );
 
 }
 
 
-function resetSelection() {
+/* -------------------------
+   СВОБОДНЫЕ СЛОТЫ
+-------------------------- */
+
+async function loadSlots() {
+
+  if (!user?.id) {
+    return;
+  }
 
   selectedDate = null;
   selectedTime = null;
@@ -341,8 +365,14 @@ function resetSelection() {
   timesContainer.innerHTML = "";
 
   document
-    .getElementById("timeBlock")
-    .classList.add("hidden");
+    .getElementById(
+      "timeBlock"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  confirmButton.disabled = true;
 
   document.getElementById(
     "selectedDate"
@@ -354,43 +384,54 @@ function resetSelection() {
   ).textContent =
     "Время: —";
 
-  confirmButton.disabled = true;
 
-}
+  const loading =
+    document.getElementById(
+      "loading"
+    );
+
+  const error =
+    document.getElementById(
+      "error"
+    );
+
+  const content =
+    document.getElementById(
+      "bookingContent"
+    );
 
 
-async function loadSlots() {
+  loading.classList.remove(
+    "hidden"
+  );
 
-  resetSelection();
+  error.classList.add(
+    "hidden"
+  );
 
-  document
-    .getElementById("loading")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("error")
-    .classList.add("hidden");
-
-  document
-    .getElementById("bookingContent")
-    .classList.add("hidden");
+  content.classList.add(
+    "hidden"
+  );
 
 
   try {
 
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
-      `?select=id,slot_date,slot_time,is_available` +
-      `&is_available=eq.true` +
-      `&order=slot_date.asc,slot_time.asc`,
-      {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization":
-            `Bearer ${SUPABASE_KEY}`
+    const response =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
+        `?select=id,slot_date,slot_time,is_available` +
+        `&is_available=eq.true` +
+        `&order=slot_date.asc,slot_time.asc`,
+        {
+          headers: {
+            apikey:
+              SUPABASE_KEY,
+
+            Authorization:
+              `Bearer ${SUPABASE_KEY}`
+          }
         }
-      }
-    );
+      );
 
 
     if (!response.ok) {
@@ -406,50 +447,50 @@ async function loadSlots() {
       await response.json();
 
 
-    document
-      .getElementById("loading")
-      .classList.add("hidden");
+    loading.classList.add(
+      "hidden"
+    );
 
 
-    if (slots.length === 0) {
-
-      const error =
-        document.getElementById("error");
+    if (
+      slots.length === 0
+    ) {
 
       error.textContent =
         "Сейчас свободных слотов нет.";
 
-      error.classList.remove("hidden");
+      error.classList.remove(
+        "hidden"
+      );
 
       return;
 
     }
 
 
-    document
-      .getElementById("bookingContent")
-      .classList.remove("hidden");
+    content.classList.remove(
+      "hidden"
+    );
 
 
     renderDates();
 
   }
 
-  catch (error) {
+  catch (e) {
 
-    console.error(error);
+    console.error(e);
 
-    document
-      .getElementById("loading")
-      .classList.add("hidden");
+    loading.classList.add(
+      "hidden"
+    );
 
-    const errorBlock =
-      document.getElementById("error");
-
-    errorBlock.textContent =
+    error.textContent =
       "Не удалось загрузить расписание.";
 
-    errorBlock.classList.remove("hidden");
+    error.classList.remove(
+      "hidden"
+    );
 
   }
 
@@ -458,186 +499,204 @@ async function loadSlots() {
 
 function renderDates() {
 
-  const uniqueDates = [
-    ...new Set(
-      slots.map(
-        slot => slot.slot_date
+  const uniqueDates =
+    [
+      ...new Set(
+        slots.map(
+          slot =>
+            slot.slot_date
+        )
       )
-    )
-  ];
+    ];
 
 
-  uniqueDates.forEach(date => {
+  uniqueDates.forEach(
+    date => {
 
-    const button =
-      document.createElement("button");
+      const button =
+        document.createElement(
+          "button"
+        );
 
-    button.textContent =
-      formatDate(date);
-
-    button.addEventListener(
-      "click",
-      () =>
-        selectDate(
-          date,
-          button
-        )
-    );
-
-    datesContainer.appendChild(
-      button
-    );
-
-  });
-
-}
+      button.textContent =
+        formatDate(date);
 
 
-function selectDate(date, button) {
+      button.addEventListener(
+        "click",
+        () => {
 
-  selectedDate = date;
+          selectedDate =
+            date;
 
-  selectedTime = null;
-  selectedSlotId = null;
+          selectedTime =
+            null;
 
-
-  document
-    .querySelectorAll("#dates button")
-    .forEach(
-      btn =>
-        btn.classList.remove(
-          "selected"
-        )
-    );
+          selectedSlotId =
+            null;
 
 
-  button.classList.add(
-    "selected"
+          document
+            .querySelectorAll(
+              "#dates button"
+            )
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "selected"
+                )
+            );
+
+
+          button.classList.add(
+            "selected"
+          );
+
+
+          document.getElementById(
+            "selectedDate"
+          ).textContent =
+            "Дата: " +
+            formatDate(date);
+
+
+          document.getElementById(
+            "selectedTime"
+          ).textContent =
+            "Время: —";
+
+
+          confirmButton.disabled =
+            true;
+
+
+          renderTimes(
+            date
+          );
+
+        }
+      );
+
+
+      datesContainer.appendChild(
+        button
+      );
+
+    }
   );
 
-
-  document.getElementById(
-    "selectedDate"
-  ).textContent =
-    "Дата: " +
-    formatDate(date);
-
-
-  document.getElementById(
-    "selectedTime"
-  ).textContent =
-    "Время: —";
-
-
-  confirmButton.disabled = true;
-
-
-  renderTimes(date);
-
 }
 
 
-function renderTimes(date) {
+function renderTimes(
+  date
+) {
 
   timesContainer.innerHTML = "";
 
 
-  const dateSlots =
-    slots.filter(
+  slots
+    .filter(
       slot =>
-        slot.slot_date === date
-    );
+        slot.slot_date ===
+        date
+    )
+    .forEach(
+      slot => {
 
-
-  dateSlots.forEach(slot => {
-
-    const button =
-      document.createElement(
-        "button"
-      );
-
-    button.textContent =
-      formatTime(
-        slot.slot_time
-      );
-
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        document
-          .querySelectorAll(
-            "#times button"
-          )
-          .forEach(
-            btn =>
-              btn.classList.remove(
-                "selected"
-              )
+        const button =
+          document.createElement(
+            "button"
           );
 
 
-        button.classList.add(
-          "selected"
-        );
-
-
-        selectedTime =
-          slot.slot_time;
-
-        selectedSlotId =
-          slot.id;
-
-
-        document.getElementById(
-          "selectedTime"
-        ).textContent =
-          "Время: " +
+        button.textContent =
           formatTime(
             slot.slot_time
           );
 
 
-        confirmButton.disabled =
-          false;
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                "#times button"
+              )
+              .forEach(
+                b =>
+                  b.classList.remove(
+                    "selected"
+                  )
+              );
+
+
+            button.classList.add(
+              "selected"
+            );
+
+
+            selectedTime =
+              slot.slot_time;
+
+            selectedSlotId =
+              slot.id;
+
+
+            document.getElementById(
+              "selectedTime"
+            ).textContent =
+              "Время: " +
+              formatTime(
+                slot.slot_time
+              );
+
+
+            confirmButton.disabled =
+              false;
+
+          }
+        );
+
+
+        timesContainer.appendChild(
+          button
+        );
 
       }
     );
 
 
-    timesContainer.appendChild(
-      button
-    );
-
-  });
-
-
   document
-    .getElementById("timeBlock")
-    .classList.remove("hidden");
+    .getElementById(
+      "timeBlock"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
 }
 
 
-/* БРОНИРОВАНИЕ */
+/* -------------------------
+   СОЗДАНИЕ ЗАПИСИ
+-------------------------- */
 
 confirmButton.addEventListener(
   "click",
   async () => {
 
-    if (!selectedSlotId)
+    if (
+      !selectedSlotId ||
+      !user?.id
+    ) {
       return;
+    }
 
 
-    const bookedDate =
-      selectedDate;
-
-    const bookedTime =
-      selectedTime;
-
-
-    confirmButton.disabled = true;
+    confirmButton.disabled =
+      true;
 
     confirmButton.textContent =
       "Записываю...";
@@ -649,32 +708,46 @@ confirmButton.addEventListener(
         await fetch(
           `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
           {
-            method: "POST",
+            method:
+              "POST",
 
             headers: {
-              "apikey":
+
+              apikey:
                 SUPABASE_KEY,
 
-              "Authorization":
+              Authorization:
                 `Bearer ${SUPABASE_KEY}`,
 
               "Content-Type":
                 "application/json"
+
             },
 
-            body: JSON.stringify({
-              p_slot_id:
-                selectedSlotId,
+            body:
+              JSON.stringify({
 
-              p_telegram_id:
-                user?.id || null,
+                p_slot_id:
+                  selectedSlotId,
 
-              p_student_name:
-                user?.first_name || "",
+                p_telegram_id:
+                  Number(
+                    user.id
+                  ),
 
-              p_username:
-                user?.username || ""
-            })
+                p_student_name:
+                  [
+                    user.first_name,
+                    user.last_name
+                  ]
+                    .filter(Boolean)
+                    .join(" "),
+
+                p_username:
+                  user.username || ""
+
+              })
+
           }
         );
 
@@ -695,7 +768,7 @@ confirmButton.addEventListener(
       if (!success) {
 
         alert(
-          "Этот слот уже занят. Выбери другое время."
+          "Этот слот уже занят."
         );
 
         await loadSlots();
@@ -705,82 +778,53 @@ confirmButton.addEventListener(
       }
 
 
-      if (tg?.HapticFeedback) {
-
-        tg.HapticFeedback
-          .notificationOccurred(
-            "success"
-          );
-
-      }
-
-
-      document
-        .getElementById(
-          "bookingPage"
-        )
-        .classList.add(
-          "hidden"
+      tg?.HapticFeedback
+        ?.notificationOccurred(
+          "success"
         );
 
-
-      document
-        .getElementById(
-          "successDate"
-        )
-        .textContent =
-          formatDate(
-            bookedDate
-          );
-
-
-      document
-        .getElementById(
-          "successTime"
-        )
-        .textContent =
-          formatTime(
-            bookedTime
-          );
-
-
-      document
-        .getElementById(
-          "successScreen"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-    }
-
-    catch (error) {
-
-      console.error(error);
 
       alert(
-        "Не удалось создать запись."
+        `Запись подтверждена 🎉\n\n` +
+        `${formatDate(selectedDate)}\n` +
+        `${formatTime(selectedTime)}`
       );
 
-      confirmButton.disabled =
-        false;
 
-    }
-
-    finally {
-
-      confirmButton.textContent =
-        "Записаться";
-
-    }
+      showMyBookingPage();
 
   }
-);
+
+  catch (e) {
+
+    console.error(e);
+
+    alert(
+      "Не удалось создать запись."
+    );
+
+  }
+
+  finally {
+
+    confirmButton.textContent =
+      "Записаться";
+
+  }
+
+});
 
 
-/* МОЯ ЗАПИСЬ */
+/* -------------------------
+   МОЯ ЗАПИСЬ
+-------------------------- */
 
 async function loadMyBooking() {
+
+  if (!user?.id) {
+    return;
+  }
+
 
   const loading =
     document.getElementById(
@@ -797,6 +841,9 @@ async function loadMyBooking() {
       "myBookingCard"
     );
 
+
+  loading.textContent =
+    "Проверяю твою запись...";
 
   loading.classList.remove(
     "hidden"
@@ -817,23 +864,33 @@ async function loadMyBooking() {
       await fetch(
         `${SUPABASE_URL}/rest/v1/rpc/get_my_booking`,
         {
-          method: "POST",
+
+          method:
+            "POST",
 
           headers: {
-            "apikey":
+
+            apikey:
               SUPABASE_KEY,
 
-            "Authorization":
+            Authorization:
               `Bearer ${SUPABASE_KEY}`,
 
             "Content-Type":
               "application/json"
+
           },
 
-          body: JSON.stringify({
-            p_telegram_id:
-              user?.id || null
-          })
+          body:
+            JSON.stringify({
+
+              p_telegram_id:
+                Number(
+                  user.id
+                )
+
+            })
+
         }
       );
 
@@ -861,7 +918,8 @@ async function loadMyBooking() {
       result.length === 0
     ) {
 
-      myBooking = null;
+      myBooking =
+        null;
 
       noBooking.classList.remove(
         "hidden"
@@ -900,9 +958,9 @@ async function loadMyBooking() {
 
   }
 
-  catch (error) {
+  catch (e) {
 
-    console.error(error);
+    console.error(e);
 
     loading.textContent =
       "Не удалось загрузить запись.";
@@ -912,7 +970,9 @@ async function loadMyBooking() {
 }
 
 
-/* ОТМЕНА */
+/* -------------------------
+   ОТМЕНА
+-------------------------- */
 
 document.getElementById(
   "cancelBooking"
@@ -920,8 +980,12 @@ document.getElementById(
   "click",
   async () => {
 
-    if (!myBooking)
+    if (
+      !myBooking ||
+      !user?.id
+    ) {
       return;
+    }
 
 
     const confirmed =
@@ -930,20 +994,9 @@ document.getElementById(
       );
 
 
-    if (!confirmed)
+    if (!confirmed) {
       return;
-
-
-    const button =
-      document.getElementById(
-        "cancelBooking"
-      );
-
-
-    button.disabled = true;
-
-    button.textContent =
-      "Отменяю...";
+    }
 
 
     try {
@@ -952,26 +1005,36 @@ document.getElementById(
         await fetch(
           `${SUPABASE_URL}/rest/v1/rpc/cancel_my_booking`,
           {
-            method: "POST",
+
+            method:
+              "POST",
 
             headers: {
-              "apikey":
+
+              apikey:
                 SUPABASE_KEY,
 
-              "Authorization":
+              Authorization:
                 `Bearer ${SUPABASE_KEY}`,
 
               "Content-Type":
                 "application/json"
+
             },
 
-            body: JSON.stringify({
-              p_slot_id:
-                myBooking.id,
+            body:
+              JSON.stringify({
 
-              p_telegram_id:
-                user?.id || null
-            })
+                p_slot_id:
+                  myBooking.id,
+
+                p_telegram_id:
+                  Number(
+                    user.id
+                  )
+
+              })
+
           }
         );
 
@@ -1000,61 +1063,45 @@ document.getElementById(
       }
 
 
-      if (tg?.HapticFeedback) {
-
-        tg.HapticFeedback
-          .notificationOccurred(
-            "success"
-          );
-
-      }
-
-
       alert(
         "Запись отменена"
       );
 
 
-      myBooking = null;
+      myBooking =
+        null;
+
 
       await loadMyBooking();
 
       await loadSlots();
 
-    }
+  }
 
-    catch (error) {
+  catch (e) {
 
-      console.error(error);
+    console.error(e);
 
-      alert(
-        "Произошла ошибка."
-      );
-
-    }
-
-    finally {
-
-      button.disabled = false;
-
-      button.textContent =
-        "Отменить запись";
-
-    }
+    alert(
+      "Произошла ошибка."
+    );
 
   }
-);
+
+});
 
 
-/* НАВИГАЦИЯ */
+/* -------------------------
+   НАВИГАЦИЯ
+-------------------------- */
 
 function showBookingPage() {
 
   document
     .getElementById(
-      "successScreen"
+      "bookingPage"
     )
-    .classList.add(
+    .classList.remove(
       "hidden"
     );
 
@@ -1063,14 +1110,6 @@ function showBookingPage() {
       "myBookingPage"
     )
     .classList.add(
-      "hidden"
-    );
-
-  document
-    .getElementById(
-      "bookingPage"
-    )
-    .classList.remove(
       "hidden"
     );
 
@@ -1091,18 +1130,13 @@ function showBookingPage() {
       "active"
     );
 
+
+  loadSlots();
+
 }
 
 
 function showMyBookingPage() {
-
-  document
-    .getElementById(
-      "successScreen"
-    )
-    .classList.add(
-      "hidden"
-    );
 
   document
     .getElementById(
@@ -1159,15 +1193,15 @@ document.getElementById(
 );
 
 
-document.getElementById(
-  "openMyBooking"
-).addEventListener(
-  "click",
-  showMyBookingPage
-);
+/* -------------------------
+   СТАРТ
+-------------------------- */
 
+if (user?.id) {
 
-loadSlots();
+  loadSlots();
+
+}
 
 </script>
 
