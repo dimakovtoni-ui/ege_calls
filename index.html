@@ -20,7 +20,6 @@
       --muted: #6b7280;
       --border: #e5e7eb;
       --surface: #ffffff;
-      --surface-soft: #f8fafc;
       --danger: #dc2626;
       --danger-soft: #fef2f2;
       --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
@@ -114,14 +113,9 @@
       font-size: 16px;
     }
 
-    .curator-info {
-      min-width: 0;
-    }
-
     .curator-name {
       font-size: 15px;
       font-weight: 750;
-      color: var(--text);
     }
 
     .curator-role {
@@ -149,7 +143,6 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.18s ease;
     }
 
     .tab.active {
@@ -166,7 +159,6 @@
       margin: 0 0 12px;
       font-size: 15px;
       font-weight: 800;
-      letter-spacing: -0.01em;
     }
 
     .section-subtitle {
@@ -189,15 +181,6 @@
       padding: 12px 8px;
       text-align: center;
       cursor: pointer;
-      transition:
-        transform 0.16s ease,
-        border-color 0.16s ease,
-        background 0.16s ease,
-        box-shadow 0.16s ease;
-    }
-
-    .date-card:active {
-      transform: scale(0.98);
     }
 
     .date-card.selected {
@@ -243,7 +226,6 @@
       font-size: 15px;
       font-weight: 750;
       cursor: pointer;
-      transition: 0.16s ease;
     }
 
     .time-button.selected {
@@ -251,6 +233,22 @@
       border-color: var(--blue);
       color: var(--blue);
       box-shadow: inset 0 0 0 1px var(--blue);
+    }
+
+    .field {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 15px 16px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
     }
 
     .summary-card {
@@ -293,10 +291,6 @@
       flex: 0 0 36px;
     }
 
-    .summary-text {
-      min-width: 0;
-    }
-
     .summary-caption {
       font-size: 12px;
       color: var(--muted);
@@ -319,32 +313,13 @@
       font-size: 16px;
       font-weight: 800;
       cursor: pointer;
-      transition: 0.18s ease;
       box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
-    }
-
-    .primary-button:active {
-      transform: translateY(1px);
-      background: var(--blue-dark);
     }
 
     .primary-button:disabled {
       opacity: 0.45;
       box-shadow: none;
       cursor: not-allowed;
-    }
-
-    .secondary-button {
-      width: 100%;
-      margin-top: 12px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 15px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 750;
-      cursor: pointer;
     }
 
     .danger-button {
@@ -381,7 +356,6 @@
     .booking-status {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       background: #ecfdf5;
       color: #047857;
       border-radius: 999px;
@@ -395,7 +369,6 @@
       margin: 0;
       font-size: 20px;
       font-weight: 850;
-      letter-spacing: -0.02em;
     }
 
     .booking-meta {
@@ -408,62 +381,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      color: var(--text);
       font-size: 15px;
       font-weight: 650;
-    }
-
-    .success-screen {
-      text-align: center;
-      padding: 26px 8px 8px;
-    }
-
-    .success-icon {
-      width: 74px;
-      height: 74px;
-      margin: 0 auto 18px;
-      border-radius: 24px;
-      background: var(--blue-soft);
-      color: var(--blue);
-      display: grid;
-      place-items: center;
-      font-size: 34px;
-      font-weight: 900;
-    }
-
-    .success-screen h2 {
-      margin: 0;
-      font-size: 25px;
-      letter-spacing: -0.03em;
-    }
-
-    .success-screen p {
-      margin: 8px auto 0;
-      max-width: 320px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .success-info {
-      margin-top: 20px;
-      padding: 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-    }
-
-    .success-date {
-      font-size: 17px;
-      font-weight: 800;
-    }
-
-    .success-time {
-      margin-top: 6px;
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--blue);
     }
 
     .hidden {
@@ -471,10 +390,7 @@
     }
 
     @media (max-width: 390px) {
-      .dates {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
+      .dates,
       .times {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -503,7 +419,7 @@
       <div class="curator-card">
         <div class="avatar">ДА</div>
 
-        <div class="curator-info">
+        <div>
           <div class="curator-name">
             Димаков Антон
           </div>
@@ -515,12 +431,10 @@
       </div>
     </section>
 
-
     <div id="telegramError" class="message hidden">
       Не удалось получить данные Telegram-пользователя.
       Закрой Mini App и открой его заново через кнопку бота.
     </div>
-
 
     <div id="appContent">
 
@@ -535,8 +449,6 @@
       </nav>
 
 
-      <!-- СТРАНИЦА ЗАПИСИ -->
-
       <section id="bookingPage">
 
         <div id="loading" class="message">
@@ -544,7 +456,6 @@
         </div>
 
         <div id="error" class="message hidden"></div>
-
 
         <div id="bookingContent" class="hidden">
 
@@ -570,7 +481,27 @@
           </section>
 
 
+          <section class="section">
+            <h2 class="section-title">
+              Имя и фамилия
+            </h2>
+
+            <div class="section-subtitle">
+              Укажи, пожалуйста, как тебя зовут
+            </div>
+
+            <input
+              id="studentName"
+              class="field"
+              type="text"
+              placeholder="Например: Иван Иванов"
+              autocomplete="name"
+            />
+          </section>
+
+
           <section class="summary-card">
+
             <div class="summary-label">
               Твой выбор
             </div>
@@ -578,7 +509,7 @@
             <div class="summary-row">
               <div class="summary-icon">📅</div>
 
-              <div class="summary-text">
+              <div>
                 <div class="summary-caption">
                   Дата
                 </div>
@@ -595,7 +526,7 @@
             <div class="summary-row">
               <div class="summary-icon">🕒</div>
 
-              <div class="summary-text">
+              <div>
                 <div class="summary-caption">
                   Время
                 </div>
@@ -609,6 +540,23 @@
               </div>
             </div>
 
+            <div class="summary-row">
+              <div class="summary-icon">👤</div>
+
+              <div>
+                <div class="summary-caption">
+                  Ученик
+                </div>
+
+                <div
+                  id="selectedStudent"
+                  class="summary-value"
+                >
+                  Не указано
+                </div>
+              </div>
+            </div>
+
             <button
               id="confirm"
               class="primary-button"
@@ -616,13 +564,12 @@
             >
               Записаться на созвон
             </button>
+
           </section>
 
         </div>
       </section>
 
-
-      <!-- МОЯ ЗАПИСЬ -->
 
       <section id="myBookingPage" class="hidden">
 
@@ -635,9 +582,7 @@
           class="message hidden"
         >
           У тебя пока нет активной записи.
-          Перейди во вкладку «Записаться» и выбери удобное время.
         </div>
-
 
         <div
           id="myBookingCard"
@@ -680,54 +625,7 @@
 
       </section>
 
-
-      <!-- УСПЕШНАЯ ЗАПИСЬ -->
-
-      <section id="successScreen" class="success-screen hidden">
-
-        <div class="success-icon">
-          ✓
-        </div>
-
-        <h2>
-          Всё готово!
-        </h2>
-
-        <p>
-          Ты записан на созвон с куратором.
-          Сохрани время, чтобы не пропустить встречу.
-        </p>
-
-        <div class="success-info">
-          <div
-            id="successDate"
-            class="success-date"
-          ></div>
-
-          <div
-            id="successTime"
-            class="success-time"
-          ></div>
-        </div>
-
-        <button
-          id="openMyBooking"
-          class="primary-button"
-        >
-          Посмотреть мою запись
-        </button>
-
-        <button
-          id="backToBooking"
-          class="secondary-button"
-        >
-          Вернуться к расписанию
-        </button>
-
-      </section>
-
     </div>
-
   </main>
 
 
@@ -744,7 +642,6 @@
 
     const tg =
       window.Telegram?.WebApp;
-
 
     if (tg) {
       tg.ready();
@@ -764,6 +661,12 @@
 
     const appContent =
       document.getElementById("appContent");
+
+    const studentNameInput =
+      document.getElementById("studentName");
+
+    const selectedStudent =
+      document.getElementById("selectedStudent");
 
 
     if (!user?.id) {
@@ -853,6 +756,34 @@
     }
 
 
+    function updateConfirmState() {
+      const studentName =
+        studentNameInput.value.trim();
+
+      confirmButton.disabled =
+        !(
+          selectedSlotId &&
+          selectedDate &&
+          selectedTime &&
+          studentName
+        );
+    }
+
+
+    studentNameInput.addEventListener(
+      "input",
+      () => {
+        const value =
+          studentNameInput.value.trim();
+
+        selectedStudent.textContent =
+          value || "Не указано";
+
+        updateConfirmState();
+      }
+    );
+
+
     function resetSelection() {
       selectedDate = null;
       selectedTime = null;
@@ -875,7 +806,7 @@
       ).textContent =
         "Не выбрано";
 
-      confirmButton.disabled = true;
+      updateConfirmState();
     }
 
 
@@ -1059,9 +990,7 @@
         "Не выбрано";
 
 
-      confirmButton.disabled =
-        true;
-
+      updateConfirmState();
 
       renderTimes(date);
     }
@@ -1130,8 +1059,7 @@
               );
 
 
-            confirmButton.disabled =
-              false;
+            updateConfirmState();
           }
         );
 
@@ -1156,19 +1084,27 @@
       "click",
       async () => {
 
+        const studentName =
+          studentNameInput.value.trim();
+
+
+        if (!studentName) {
+          alert(
+            "Укажи имя и фамилию"
+          );
+
+          studentNameInput.focus();
+
+          return;
+        }
+
+
         if (
           !selectedSlotId ||
           !user?.id
         ) {
           return;
         }
-
-
-        const bookedDate =
-          selectedDate;
-
-        const bookedTime =
-          selectedTime;
 
 
         confirmButton.disabled =
@@ -1205,12 +1141,7 @@
                       Number(user.id),
 
                     p_student_name:
-                      [
-                        user.first_name,
-                        user.last_name
-                      ]
-                      .filter(Boolean)
-                      .join(" "),
+                      studentName,
 
                     p_username:
                       user.username || ""
@@ -1247,51 +1178,12 @@
             );
 
 
-          document
-            .getElementById(
-              "bookingPage"
-            )
-            .classList.add(
-              "hidden"
-            );
+          alert(
+            "Запись подтверждена 🎉"
+          );
 
 
-          document
-            .getElementById(
-              "myBookingPage"
-            )
-            .classList.add(
-              "hidden"
-            );
-
-
-          document
-            .getElementById(
-              "successDate"
-            )
-            .textContent =
-              formatDate(
-                bookedDate
-              );
-
-
-          document
-            .getElementById(
-              "successTime"
-            )
-            .textContent =
-              formatTime(
-                bookedTime
-              );
-
-
-          document
-            .getElementById(
-              "successScreen"
-            )
-            .classList.remove(
-              "hidden"
-            );
+          showMyBookingPage();
 
         } catch (error) {
           console.error(error);
@@ -1304,8 +1196,7 @@
           confirmButton.textContent =
             "Записаться на созвон";
 
-          confirmButton.disabled =
-            false;
+          updateConfirmState();
         }
       }
     );
@@ -1465,19 +1356,6 @@
         }
 
 
-        const cancelButton =
-          document.getElementById(
-            "cancelBooking"
-          );
-
-
-        cancelButton.disabled =
-          true;
-
-        cancelButton.textContent =
-          "Отменяю...";
-
-
         try {
           const response =
             await fetch(
@@ -1528,12 +1406,6 @@
           }
 
 
-          tg?.HapticFeedback
-            ?.notificationOccurred(
-              "success"
-            );
-
-
           myBooking =
             null;
 
@@ -1548,21 +1420,12 @@
           alert(
             "Произошла ошибка."
           );
-
-        } finally {
-          cancelButton.disabled =
-            false;
-
-          cancelButton.textContent =
-            "Отменить запись";
         }
       }
     );
 
 
-    function setActiveTab(
-      active
-    ) {
+    function setActiveTab(active) {
       document
         .getElementById(
           "bookingTab"
@@ -1584,14 +1447,6 @@
 
 
     function showBookingPage() {
-      document
-        .getElementById(
-          "successScreen"
-        )
-        .classList.add(
-          "hidden"
-        );
-
       document
         .getElementById(
           "myBookingPage"
@@ -1617,14 +1472,6 @@
 
 
     function showMyBookingPage() {
-      document
-        .getElementById(
-          "successScreen"
-        )
-        .classList.add(
-          "hidden"
-        );
-
       document
         .getElementById(
           "bookingPage"
@@ -1662,22 +1509,6 @@
     ).addEventListener(
       "click",
       showMyBookingPage
-    );
-
-
-    document.getElementById(
-      "openMyBooking"
-    ).addEventListener(
-      "click",
-      showMyBookingPage
-    );
-
-
-    document.getElementById(
-      "backToBooking"
-    ).addEventListener(
-      "click",
-      showBookingPage
     );
 
 
