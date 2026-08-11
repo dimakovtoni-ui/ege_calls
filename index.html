@@ -29,7 +29,24 @@
 
     .subtitle {
       color: var(--tg-theme-hint-color, #777);
+      margin-bottom: 20px;
+    }
+
+    .navigation {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
       margin-bottom: 24px;
+    }
+
+    .nav-button {
+      font-weight: 600;
+    }
+
+    .nav-button.active {
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      border-color: transparent;
     }
 
     .dates,
@@ -55,15 +72,21 @@
       border-color: transparent;
     }
 
-    .summary {
+    .summary,
+    .booking-card,
+    .message {
       padding: 16px;
       border-radius: 14px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+    }
+
+    .summary {
       margin-top: 24px;
       margin-bottom: 16px;
     }
 
-    .summary p {
+    .summary p,
+    .booking-card p {
       margin: 8px 0 0;
     }
 
@@ -77,13 +100,10 @@
 
     .confirm:disabled {
       opacity: 0.45;
-      cursor: not-allowed;
     }
 
-    .message {
-      padding: 16px;
-      border-radius: 12px;
-      background: var(--tg-theme-secondary-bg-color, #f4f4f4);
+    .cancel {
+      width: 100%;
       margin-top: 16px;
     }
 
@@ -98,6 +118,10 @@
       margin-bottom: 12px;
     }
 
+    .message {
+      margin-top: 16px;
+    }
+
     .hidden {
       display: none;
     }
@@ -106,422 +130,1046 @@
 
 <body>
 
-  <h1>Запись на созвон 👋</h1>
+  <h1>Созвон с куратором 👋</h1>
 
   <div class="subtitle" id="hello">
-    Выбери удобную дату и время
+    Выбери удобное время
   </div>
 
-  <div id="loading" class="message">
-    Загружаю свободные слоты...
-  </div>
-
-  <div id="error" class="message hidden"></div>
-
-  <div id="bookingContent" class="hidden">
-
-    <h3>Дата</h3>
-    <div class="dates" id="dates"></div>
-
-    <div id="timeBlock" class="hidden">
-      <h3>Время</h3>
-      <div class="times" id="times"></div>
-    </div>
-
-    <div class="summary">
-      <strong>Твоя запись</strong>
-      <p id="selectedDate">Дата: —</p>
-      <p id="selectedTime">Время: —</p>
-    </div>
-
-    <button class="confirm" id="confirm" disabled>
+  <div class="navigation">
+    <button id="bookingTab" class="nav-button active">
       Записаться
+    </button>
+
+    <button id="myBookingTab" class="nav-button">
+      Моя запись
+    </button>
+  </div>
+
+
+  <!-- ЗАПИСЬ -->
+
+  <div id="bookingPage">
+
+    <div id="loading" class="message">
+      Загружаю свободные слоты...
+    </div>
+
+    <div id="error" class="message hidden"></div>
+
+    <div id="bookingContent" class="hidden">
+
+      <h3>Дата</h3>
+
+      <div class="dates" id="dates"></div>
+
+      <div id="timeBlock" class="hidden">
+
+        <h3>Время</h3>
+
+        <div class="times" id="times"></div>
+
+      </div>
+
+      <div class="summary">
+
+        <strong>Твоя запись</strong>
+
+        <p id="selectedDate">
+          Дата: —
+        </p>
+
+        <p id="selectedTime">
+          Время: —
+        </p>
+
+      </div>
+
+      <button
+        class="confirm"
+        id="confirm"
+        disabled
+      >
+        Записаться
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- МОЯ ЗАПИСЬ -->
+
+  <div id="myBookingPage" class="hidden">
+
+    <div id="myBookingLoading" class="message">
+      Проверяю твою запись...
+    </div>
+
+    <div
+      id="noBooking"
+      class="message hidden"
+    >
+      У тебя пока нет активной записи.
+    </div>
+
+    <div
+      id="myBookingCard"
+      class="booking-card hidden"
+    >
+
+      <strong>Ближайший созвон</strong>
+
+      <p id="myBookingDate"></p>
+      <p id="myBookingTime"></p>
+
+      <button
+        id="cancelBooking"
+        class="cancel"
+      >
+        Отменить запись
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- УСПЕШНАЯ ЗАПИСЬ -->
+
+  <div id="successScreen" class="success hidden">
+
+    <div class="success-title">
+      Запись подтверждена 🎉
+    </div>
+
+    <div id="successDate"></div>
+    <div id="successTime"></div>
+
+    <br>
+
+    <button id="openMyBooking">
+      Посмотреть мою запись
     </button>
 
   </div>
 
-  <div id="successScreen" class="success hidden">
-    <div class="success-title">Запись подтверждена 🎉</div>
-    <div id="successDate"></div>
-    <div id="successTime"></div>
-  </div>
 
-  <script>
-    const SUPABASE_URL =
-      "https://kycanipxibndwemdfaon.supabase.co";
+<script>
 
-    const SUPABASE_KEY =
-      "sb_publishable_6jJtpcJUt5Z2wNB2qfOgTw_t_wxyLQi";
+const SUPABASE_URL =
+  "https://kycanipxibndwemdfaon.supabase.co";
 
-    const TABLE_NAME = "ege_calls";
+const SUPABASE_KEY =
+  "sb_publishable_6jJtpcJUt5Z2wNB2qfOgTw_t_wxyLQi";
 
-    const tg = window.Telegram?.WebApp;
+const TABLE_NAME = "ege_calls";
 
-    if (tg) {
-      tg.ready();
-      tg.expand();
+
+const tg = window.Telegram?.WebApp;
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
+
+
+const user =
+  tg?.initDataUnsafe?.user;
+
+
+if (user?.first_name) {
+
+  document.getElementById(
+    "hello"
+  ).textContent =
+    `Привет, ${user.first_name}! Выбери удобное время`;
+
+}
+
+
+let slots = [];
+
+let selectedDate = null;
+let selectedTime = null;
+let selectedSlotId = null;
+
+let myBooking = null;
+
+
+const datesContainer =
+  document.getElementById("dates");
+
+const timesContainer =
+  document.getElementById("times");
+
+const confirmButton =
+  document.getElementById("confirm");
+
+
+function formatDate(dateString) {
+
+  const date =
+    new Date(dateString + "T00:00:00");
+
+  return new Intl.DateTimeFormat(
+    "ru-RU",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
     }
+  ).format(date);
 
-    const user = tg?.initDataUnsafe?.user;
+}
 
-    if (user?.first_name) {
-      document.getElementById("hello").textContent =
-        `Привет, ${user.first_name}! Выбери удобную дату и время`;
-    }
 
-    let slots = [];
+function formatTime(timeString) {
 
-    let selectedDate = null;
-    let selectedTime = null;
-    let selectedSlotId = null;
+  return timeString.slice(0, 5);
 
-    const datesContainer =
-      document.getElementById("dates");
+}
 
-    const timesContainer =
-      document.getElementById("times");
 
-    const confirmButton =
-      document.getElementById("confirm");
+function resetSelection() {
 
-    const loadingBlock =
-      document.getElementById("loading");
+  selectedDate = null;
+  selectedTime = null;
+  selectedSlotId = null;
 
-    const errorBlock =
-      document.getElementById("error");
+  datesContainer.innerHTML = "";
+  timesContainer.innerHTML = "";
 
-    const bookingContent =
-      document.getElementById("bookingContent");
+  document
+    .getElementById("timeBlock")
+    .classList.add("hidden");
 
-    const successScreen =
-      document.getElementById("successScreen");
+  document.getElementById(
+    "selectedDate"
+  ).textContent =
+    "Дата: —";
 
+  document.getElementById(
+    "selectedTime"
+  ).textContent =
+    "Время: —";
 
-    function formatDate(dateString) {
-      const date = new Date(dateString + "T00:00:00");
+  confirmButton.disabled = true;
 
-      return new Intl.DateTimeFormat(
-        "ru-RU",
-        {
-          day: "numeric",
-          month: "long"
-        }
-      ).format(date);
-    }
+}
 
 
-    function formatTime(timeString) {
-      return timeString.slice(0, 5);
-    }
+async function loadSlots() {
 
+  resetSelection();
 
-    function resetSelection() {
-      selectedDate = null;
-      selectedTime = null;
-      selectedSlotId = null;
+  document
+    .getElementById("loading")
+    .classList.remove("hidden");
 
-      datesContainer.innerHTML = "";
-      timesContainer.innerHTML = "";
+  document
+    .getElementById("error")
+    .classList.add("hidden");
 
-      document
-        .getElementById("timeBlock")
-        .classList.add("hidden");
+  document
+    .getElementById("bookingContent")
+    .classList.add("hidden");
 
-      document.getElementById(
-        "selectedDate"
-      ).textContent = "Дата: —";
 
-      document.getElementById(
-        "selectedTime"
-      ).textContent = "Время: —";
+  try {
 
-      confirmButton.disabled = true;
-    }
-
-
-    async function loadSlots() {
-      resetSelection();
-
-      loadingBlock.classList.remove("hidden");
-      errorBlock.classList.add("hidden");
-      bookingContent.classList.add("hidden");
-
-      try {
-        const response = await fetch(
-          `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
-          `?select=id,slot_date,slot_time,is_available` +
-          `&is_available=eq.true` +
-          `&order=slot_date.asc,slot_time.asc`,
-          {
-            headers: {
-              "apikey": SUPABASE_KEY,
-              "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
-          }
-        );
-
-        if (!response.ok) {
-          const errorText = await response.text();
-
-          console.error(
-            "Supabase error:",
-            response.status,
-            errorText
-          );
-
-          throw new Error("Не удалось загрузить слоты");
-        }
-
-        slots = await response.json();
-
-        loadingBlock.classList.add("hidden");
-
-        if (slots.length === 0) {
-          errorBlock.textContent =
-            "Сейчас свободных слотов нет.";
-
-          errorBlock.classList.remove("hidden");
-          return;
-        }
-
-        bookingContent.classList.remove("hidden");
-
-        renderDates();
-
-      } catch (error) {
-        console.error(error);
-
-        loadingBlock.classList.add("hidden");
-
-        errorBlock.textContent =
-          "Не удалось загрузить расписание. Попробуй позже.";
-
-        errorBlock.classList.remove("hidden");
-      }
-    }
-
-
-    function renderDates() {
-      const uniqueDates = [
-        ...new Set(
-          slots.map(slot => slot.slot_date)
-        )
-      ];
-
-      uniqueDates.forEach(date => {
-        const button =
-          document.createElement("button");
-
-        button.textContent =
-          formatDate(date);
-
-        button.addEventListener(
-          "click",
-          () => selectDate(date, button)
-        );
-
-        datesContainer.appendChild(button);
-      });
-    }
-
-
-    function selectDate(date, button) {
-      selectedDate = date;
-      selectedTime = null;
-      selectedSlotId = null;
-
-      document
-        .querySelectorAll("#dates button")
-        .forEach(btn =>
-          btn.classList.remove("selected")
-        );
-
-      button.classList.add("selected");
-
-      document.getElementById(
-        "selectedDate"
-      ).textContent =
-        "Дата: " + formatDate(date);
-
-      document.getElementById(
-        "selectedTime"
-      ).textContent =
-        "Время: —";
-
-      confirmButton.disabled = true;
-
-      renderTimes(date);
-    }
-
-
-    function renderTimes(date) {
-      timesContainer.innerHTML = "";
-
-      const dateSlots =
-        slots.filter(
-          slot =>
-            slot.slot_date === date &&
-            slot.is_available === true
-        );
-
-      dateSlots.forEach(slot => {
-        const button =
-          document.createElement("button");
-
-        button.textContent =
-          formatTime(slot.slot_time);
-
-        button.addEventListener(
-          "click",
-          () => {
-            document
-              .querySelectorAll("#times button")
-              .forEach(btn =>
-                btn.classList.remove("selected")
-              );
-
-            button.classList.add("selected");
-
-            selectedTime =
-              slot.slot_time;
-
-            selectedSlotId =
-              slot.id;
-
-            document.getElementById(
-              "selectedTime"
-            ).textContent =
-              "Время: " +
-              formatTime(slot.slot_time);
-
-            confirmButton.disabled =
-              false;
-          }
-        );
-
-        timesContainer.appendChild(button);
-      });
-
-      document
-        .getElementById("timeBlock")
-        .classList.remove("hidden");
-    }
-
-
-    confirmButton.addEventListener(
-      "click",
-      async () => {
-
-        if (!selectedSlotId) {
-          return;
-        }
-
-        const bookedDate =
-          selectedDate;
-
-        const bookedTime =
-          selectedTime;
-
-        confirmButton.disabled = true;
-        confirmButton.textContent =
-          "Записываю...";
-
-        try {
-          const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
-            {
-              method: "POST",
-
-              headers: {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json"
-              },
-
-              body: JSON.stringify({
-                p_slot_id: selectedSlotId,
-                p_telegram_id:
-                  user?.id || null,
-
-                p_student_name:
-                  user?.first_name || "",
-
-                p_username:
-                  user?.username || ""
-              })
-            }
-          );
-
-          if (!response.ok) {
-            const errorText =
-              await response.text();
-
-            console.error(
-              "Booking error:",
-              response.status,
-              errorText
-            );
-
-            throw new Error(
-              "Ошибка бронирования"
-            );
-          }
-
-          const success =
-            await response.json();
-
-          if (!success) {
-            alert(
-              "Этот слот только что занял другой ученик. Выбери другое время."
-            );
-
-            confirmButton.textContent =
-              "Записаться";
-
-            await loadSlots();
-            return;
-          }
-
-          if (tg?.HapticFeedback) {
-            tg.HapticFeedback
-              .notificationOccurred("success");
-          }
-
-          bookingContent.classList.add(
-            "hidden"
-          );
-
-          document.getElementById(
-            "successDate"
-          ).textContent =
-            formatDate(bookedDate);
-
-          document.getElementById(
-            "successTime"
-          ).textContent =
-            formatTime(bookedTime);
-
-          successScreen.classList.remove(
-            "hidden"
-          );
-
-        } catch (error) {
-          console.error(error);
-
-          alert(
-            "Не удалось создать запись. Попробуй ещё раз."
-          );
-
-          confirmButton.disabled = false;
-          confirmButton.textContent =
-            "Записаться";
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
+      `?select=id,slot_date,slot_time,is_available` +
+      `&is_available=eq.true` +
+      `&order=slot_date.asc,slot_time.asc`,
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization":
+            `Bearer ${SUPABASE_KEY}`
         }
       }
     );
 
 
-    loadSlots();
-  </script>
+    if (!response.ok) {
+
+      throw new Error(
+        await response.text()
+      );
+
+    }
+
+
+    slots =
+      await response.json();
+
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+
+    if (slots.length === 0) {
+
+      const error =
+        document.getElementById("error");
+
+      error.textContent =
+        "Сейчас свободных слотов нет.";
+
+      error.classList.remove("hidden");
+
+      return;
+
+    }
+
+
+    document
+      .getElementById("bookingContent")
+      .classList.remove("hidden");
+
+
+    renderDates();
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+    const errorBlock =
+      document.getElementById("error");
+
+    errorBlock.textContent =
+      "Не удалось загрузить расписание.";
+
+    errorBlock.classList.remove("hidden");
+
+  }
+
+}
+
+
+function renderDates() {
+
+  const uniqueDates = [
+    ...new Set(
+      slots.map(
+        slot => slot.slot_date
+      )
+    )
+  ];
+
+
+  uniqueDates.forEach(date => {
+
+    const button =
+      document.createElement("button");
+
+    button.textContent =
+      formatDate(date);
+
+    button.addEventListener(
+      "click",
+      () =>
+        selectDate(
+          date,
+          button
+        )
+    );
+
+    datesContainer.appendChild(
+      button
+    );
+
+  });
+
+}
+
+
+function selectDate(date, button) {
+
+  selectedDate = date;
+
+  selectedTime = null;
+  selectedSlotId = null;
+
+
+  document
+    .querySelectorAll("#dates button")
+    .forEach(
+      btn =>
+        btn.classList.remove(
+          "selected"
+        )
+    );
+
+
+  button.classList.add(
+    "selected"
+  );
+
+
+  document.getElementById(
+    "selectedDate"
+  ).textContent =
+    "Дата: " +
+    formatDate(date);
+
+
+  document.getElementById(
+    "selectedTime"
+  ).textContent =
+    "Время: —";
+
+
+  confirmButton.disabled = true;
+
+
+  renderTimes(date);
+
+}
+
+
+function renderTimes(date) {
+
+  timesContainer.innerHTML = "";
+
+
+  const dateSlots =
+    slots.filter(
+      slot =>
+        slot.slot_date === date
+    );
+
+
+  dateSlots.forEach(slot => {
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.textContent =
+      formatTime(
+        slot.slot_time
+      );
+
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            "#times button"
+          )
+          .forEach(
+            btn =>
+              btn.classList.remove(
+                "selected"
+              )
+          );
+
+
+        button.classList.add(
+          "selected"
+        );
+
+
+        selectedTime =
+          slot.slot_time;
+
+        selectedSlotId =
+          slot.id;
+
+
+        document.getElementById(
+          "selectedTime"
+        ).textContent =
+          "Время: " +
+          formatTime(
+            slot.slot_time
+          );
+
+
+        confirmButton.disabled =
+          false;
+
+      }
+    );
+
+
+    timesContainer.appendChild(
+      button
+    );
+
+  });
+
+
+  document
+    .getElementById("timeBlock")
+    .classList.remove("hidden");
+
+}
+
+
+/* БРОНИРОВАНИЕ */
+
+confirmButton.addEventListener(
+  "click",
+  async () => {
+
+    if (!selectedSlotId)
+      return;
+
+
+    const bookedDate =
+      selectedDate;
+
+    const bookedTime =
+      selectedTime;
+
+
+    confirmButton.disabled = true;
+
+    confirmButton.textContent =
+      "Записываю...";
+
+
+    try {
+
+      const response =
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
+          {
+            method: "POST",
+
+            headers: {
+              "apikey":
+                SUPABASE_KEY,
+
+              "Authorization":
+                `Bearer ${SUPABASE_KEY}`,
+
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              p_slot_id:
+                selectedSlotId,
+
+              p_telegram_id:
+                user?.id || null,
+
+              p_student_name:
+                user?.first_name || "",
+
+              p_username:
+                user?.username || ""
+            })
+          }
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          await response.text()
+        );
+
+      }
+
+
+      const success =
+        await response.json();
+
+
+      if (!success) {
+
+        alert(
+          "Этот слот уже занят. Выбери другое время."
+        );
+
+        await loadSlots();
+
+        return;
+
+      }
+
+
+      if (tg?.HapticFeedback) {
+
+        tg.HapticFeedback
+          .notificationOccurred(
+            "success"
+          );
+
+      }
+
+
+      document
+        .getElementById(
+          "bookingPage"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+
+      document
+        .getElementById(
+          "successDate"
+        )
+        .textContent =
+          formatDate(
+            bookedDate
+          );
+
+
+      document
+        .getElementById(
+          "successTime"
+        )
+        .textContent =
+          formatTime(
+            bookedTime
+          );
+
+
+      document
+        .getElementById(
+          "successScreen"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Не удалось создать запись."
+      );
+
+      confirmButton.disabled =
+        false;
+
+    }
+
+    finally {
+
+      confirmButton.textContent =
+        "Записаться";
+
+    }
+
+  }
+);
+
+
+/* МОЯ ЗАПИСЬ */
+
+async function loadMyBooking() {
+
+  const loading =
+    document.getElementById(
+      "myBookingLoading"
+    );
+
+  const noBooking =
+    document.getElementById(
+      "noBooking"
+    );
+
+  const card =
+    document.getElementById(
+      "myBookingCard"
+    );
+
+
+  loading.classList.remove(
+    "hidden"
+  );
+
+  noBooking.classList.add(
+    "hidden"
+  );
+
+  card.classList.add(
+    "hidden"
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/rpc/get_my_booking`,
+        {
+          method: "POST",
+
+          headers: {
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              `Bearer ${SUPABASE_KEY}`,
+
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            p_telegram_id:
+              user?.id || null
+          })
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        await response.text()
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    loading.classList.add(
+      "hidden"
+    );
+
+
+    if (
+      !result ||
+      result.length === 0
+    ) {
+
+      myBooking = null;
+
+      noBooking.classList.remove(
+        "hidden"
+      );
+
+      return;
+
+    }
+
+
+    myBooking =
+      result[0];
+
+
+    document.getElementById(
+      "myBookingDate"
+    ).textContent =
+      "📅 " +
+      formatDate(
+        myBooking.slot_date
+      );
+
+
+    document.getElementById(
+      "myBookingTime"
+    ).textContent =
+      "🕒 " +
+      formatTime(
+        myBooking.slot_time
+      );
+
+
+    card.classList.remove(
+      "hidden"
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    loading.textContent =
+      "Не удалось загрузить запись.";
+
+  }
+
+}
+
+
+/* ОТМЕНА */
+
+document.getElementById(
+  "cancelBooking"
+).addEventListener(
+  "click",
+  async () => {
+
+    if (!myBooking)
+      return;
+
+
+    const confirmed =
+      confirm(
+        "Отменить запись на созвон?"
+      );
+
+
+    if (!confirmed)
+      return;
+
+
+    const button =
+      document.getElementById(
+        "cancelBooking"
+      );
+
+
+    button.disabled = true;
+
+    button.textContent =
+      "Отменяю...";
+
+
+    try {
+
+      const response =
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/rpc/cancel_my_booking`,
+          {
+            method: "POST",
+
+            headers: {
+              "apikey":
+                SUPABASE_KEY,
+
+              "Authorization":
+                `Bearer ${SUPABASE_KEY}`,
+
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              p_slot_id:
+                myBooking.id,
+
+              p_telegram_id:
+                user?.id || null
+            })
+          }
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          await response.text()
+        );
+
+      }
+
+
+      const success =
+        await response.json();
+
+
+      if (!success) {
+
+        alert(
+          "Не удалось отменить запись."
+        );
+
+        return;
+
+      }
+
+
+      if (tg?.HapticFeedback) {
+
+        tg.HapticFeedback
+          .notificationOccurred(
+            "success"
+          );
+
+      }
+
+
+      alert(
+        "Запись отменена"
+      );
+
+
+      myBooking = null;
+
+      await loadMyBooking();
+
+      await loadSlots();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Произошла ошибка."
+      );
+
+    }
+
+    finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "Отменить запись";
+
+    }
+
+  }
+);
+
+
+/* НАВИГАЦИЯ */
+
+function showBookingPage() {
+
+  document
+    .getElementById(
+      "successScreen"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "myBookingPage"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "bookingPage"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "bookingTab"
+    )
+    .classList.add(
+      "active"
+    );
+
+  document
+    .getElementById(
+      "myBookingTab"
+    )
+    .classList.remove(
+      "active"
+    );
+
+}
+
+
+function showMyBookingPage() {
+
+  document
+    .getElementById(
+      "successScreen"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "bookingPage"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "myBookingPage"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "bookingTab"
+    )
+    .classList.remove(
+      "active"
+    );
+
+  document
+    .getElementById(
+      "myBookingTab"
+    )
+    .classList.add(
+      "active"
+    );
+
+
+  loadMyBooking();
+
+}
+
+
+document.getElementById(
+  "bookingTab"
+).addEventListener(
+  "click",
+  showBookingPage
+);
+
+
+document.getElementById(
+  "myBookingTab"
+).addEventListener(
+  "click",
+  showMyBookingPage
+);
+
+
+document.getElementById(
+  "openMyBooking"
+).addEventListener(
+  "click",
+  showMyBookingPage
+);
+
+
+loadSlots();
+
+</script>
 
 </body>
 </html>
