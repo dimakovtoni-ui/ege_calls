@@ -20,6 +20,7 @@
       --muted: #6b7280;
       --border: #e5e7eb;
       --surface: #ffffff;
+      --surface-soft: #f8fafc;
       --danger: #dc2626;
       --danger-soft: #fef2f2;
       --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
@@ -165,6 +166,7 @@
       margin: -5px 0 12px;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.45;
     }
 
     .dates {
@@ -251,6 +253,10 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
     }
 
+    .field + .field {
+      margin-top: 10px;
+    }
+
     .summary-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -300,6 +306,7 @@
       margin-top: 2px;
       font-size: 15px;
       font-weight: 750;
+      overflow-wrap: anywhere;
     }
 
     .primary-button {
@@ -431,10 +438,12 @@
       </div>
     </section>
 
+
     <div id="telegramError" class="message hidden">
       Не удалось получить данные Telegram-пользователя.
       Закрой Mini App и открой его заново через кнопку бота.
     </div>
+
 
     <div id="appContent">
 
@@ -500,6 +509,25 @@
           </section>
 
 
+          <section class="section">
+            <h2 class="section-title">
+              Какое задание разберём?
+            </h2>
+
+            <div class="section-subtitle">
+              Напиши номер задания ЕГЭ, которое хочешь разобрать на созвоне
+            </div>
+
+            <input
+              id="taskNumber"
+              class="field"
+              type="text"
+              placeholder="Например: №13 или №19"
+              inputmode="text"
+            />
+          </section>
+
+
           <section class="summary-card">
 
             <div class="summary-label">
@@ -523,6 +551,7 @@
               </div>
             </div>
 
+
             <div class="summary-row">
               <div class="summary-icon">🕒</div>
 
@@ -540,6 +569,7 @@
               </div>
             </div>
 
+
             <div class="summary-row">
               <div class="summary-icon">👤</div>
 
@@ -556,6 +586,25 @@
                 </div>
               </div>
             </div>
+
+
+            <div class="summary-row">
+              <div class="summary-icon">✏️</div>
+
+              <div>
+                <div class="summary-caption">
+                  Задание для разбора
+                </div>
+
+                <div
+                  id="selectedTask"
+                  class="summary-value"
+                >
+                  Не указано
+                </div>
+              </div>
+            </div>
+
 
             <button
               id="confirm"
@@ -665,8 +714,14 @@
     const studentNameInput =
       document.getElementById("studentName");
 
+    const taskNumberInput =
+      document.getElementById("taskNumber");
+
     const selectedStudent =
       document.getElementById("selectedStudent");
+
+    const selectedTask =
+      document.getElementById("selectedTask");
 
 
     if (!user?.id) {
@@ -760,12 +815,16 @@
       const studentName =
         studentNameInput.value.trim();
 
+      const taskNumber =
+        taskNumberInput.value.trim();
+
       confirmButton.disabled =
         !(
           selectedSlotId &&
           selectedDate &&
           selectedTime &&
-          studentName
+          studentName &&
+          taskNumber
         );
     }
 
@@ -777,6 +836,20 @@
           studentNameInput.value.trim();
 
         selectedStudent.textContent =
+          value || "Не указано";
+
+        updateConfirmState();
+      }
+    );
+
+
+    taskNumberInput.addEventListener(
+      "input",
+      () => {
+        const value =
+          taskNumberInput.value.trim();
+
+        selectedTask.textContent =
           value || "Не указано";
 
         updateConfirmState();
@@ -1087,6 +1160,9 @@
         const studentName =
           studentNameInput.value.trim();
 
+        const taskNumber =
+          taskNumberInput.value.trim();
+
 
         if (!studentName) {
           alert(
@@ -1094,6 +1170,17 @@
           );
 
           studentNameInput.focus();
+
+          return;
+        }
+
+
+        if (!taskNumber) {
+          alert(
+            "Укажи номер задания для разбора"
+          );
+
+          taskNumberInput.focus();
 
           return;
         }
@@ -1144,7 +1231,10 @@
                       studentName,
 
                     p_username:
-                      user.username || ""
+                      user.username || "",
+
+                    p_task_number:
+                      taskNumber
                   })
               }
             );
