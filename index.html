@@ -24,11 +24,12 @@
 
     h3 {
       margin-top: 24px;
+      margin-bottom: 12px;
     }
 
     .subtitle {
       color: var(--tg-theme-hint-color, #777);
-      margin-bottom: 25px;
+      margin-bottom: 24px;
     }
 
     .dates,
@@ -36,39 +37,42 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-bottom: 20px;
     }
 
     button {
       padding: 14px;
-      border: 1px solid #ddd;
+      border: 1px solid rgba(120, 120, 120, 0.25);
       border-radius: 12px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
-      color: var(--tg-theme-text-color, #111);
+      color: var(--tg-theme-text-color, #111111);
       font-size: 16px;
       cursor: pointer;
     }
 
     button.selected {
       background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #fff);
+      color: var(--tg-theme-button-text-color, #ffffff);
       border-color: transparent;
     }
 
     .summary {
-      padding: 15px;
+      padding: 16px;
       border-radius: 14px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
-      margin-top: 25px;
-      margin-bottom: 20px;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+
+    .summary p {
+      margin: 8px 0 0;
     }
 
     .confirm {
       width: 100%;
-      background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #fff);
       border: none;
       font-weight: bold;
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #ffffff);
     }
 
     .confirm:disabled {
@@ -77,10 +81,21 @@
     }
 
     .message {
-      padding: 15px;
+      padding: 16px;
       border-radius: 12px;
       background: var(--tg-theme-secondary-bg-color, #f4f4f4);
-      margin-top: 15px;
+      margin-top: 16px;
+    }
+
+    .success {
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .success-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 12px;
     }
 
     .hidden {
@@ -98,12 +113,10 @@
   </div>
 
   <div id="loading" class="message">
-    Загружаю свободные даты...
+    Загружаю свободные слоты...
   </div>
 
-  <div id="error" class="message hidden">
-    Не удалось загрузить расписание.
-  </div>
+  <div id="error" class="message hidden"></div>
 
   <div id="bookingContent" class="hidden">
 
@@ -117,7 +130,6 @@
 
     <div class="summary">
       <strong>Твоя запись</strong>
-
       <p id="selectedDate">Дата: —</p>
       <p id="selectedTime">Время: —</p>
     </div>
@@ -128,6 +140,11 @@
 
   </div>
 
+  <div id="successScreen" class="success hidden">
+    <div class="success-title">Запись подтверждена 🎉</div>
+    <div id="successDate"></div>
+    <div id="successTime"></div>
+  </div>
 
   <script>
     const SUPABASE_URL =
@@ -138,14 +155,12 @@
 
     const TABLE_NAME = "ege_calls";
 
-
     const tg = window.Telegram?.WebApp;
 
     if (tg) {
       tg.ready();
       tg.expand();
     }
-
 
     const user = tg?.initDataUnsafe?.user;
 
@@ -154,13 +169,11 @@
         `Привет, ${user.first_name}! Выбери удобную дату и время`;
     }
 
-
     let slots = [];
 
     let selectedDate = null;
     let selectedTime = null;
     let selectedSlotId = null;
-
 
     const datesContainer =
       document.getElementById("dates");
@@ -171,9 +184,20 @@
     const confirmButton =
       document.getElementById("confirm");
 
+    const loadingBlock =
+      document.getElementById("loading");
+
+    const errorBlock =
+      document.getElementById("error");
+
+    const bookingContent =
+      document.getElementById("bookingContent");
+
+    const successScreen =
+      document.getElementById("successScreen");
+
 
     function formatDate(dateString) {
-
       const date = new Date(dateString + "T00:00:00");
 
       return new Intl.DateTimeFormat(
@@ -183,21 +207,46 @@
           month: "long"
         }
       ).format(date);
-
     }
 
 
     function formatTime(timeString) {
-
       return timeString.slice(0, 5);
+    }
 
+
+    function resetSelection() {
+      selectedDate = null;
+      selectedTime = null;
+      selectedSlotId = null;
+
+      datesContainer.innerHTML = "";
+      timesContainer.innerHTML = "";
+
+      document
+        .getElementById("timeBlock")
+        .classList.add("hidden");
+
+      document.getElementById(
+        "selectedDate"
+      ).textContent = "Дата: —";
+
+      document.getElementById(
+        "selectedTime"
+      ).textContent = "Время: —";
+
+      confirmButton.disabled = true;
     }
 
 
     async function loadSlots() {
+      resetSelection();
+
+      loadingBlock.classList.remove("hidden");
+      errorBlock.classList.add("hidden");
+      bookingContent.classList.add("hidden");
 
       try {
-
         const response = await fetch(
           `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
           `?select=id,slot_date,slot_time,is_available` +
@@ -205,14 +254,13 @@
           `&order=slot_date.asc,slot_time.asc`,
           {
             headers: {
-              "apikey": SUPABASE_KEY
+              "apikey": SUPABASE_KEY,
+              "Authorization": `Bearer ${SUPABASE_KEY}`
             }
           }
         );
 
-
         if (!response.ok) {
-
           const errorText = await response.text();
 
           console.error(
@@ -221,106 +269,66 @@
             errorText
           );
 
-          throw new Error("Ошибка Supabase");
-
+          throw new Error("Не удалось загрузить слоты");
         }
-
 
         slots = await response.json();
 
-
-        document
-          .getElementById("loading")
-          .classList.add("hidden");
-
+        loadingBlock.classList.add("hidden");
 
         if (slots.length === 0) {
-
-          document.getElementById("error").textContent =
+          errorBlock.textContent =
             "Сейчас свободных слотов нет.";
 
-          document
-            .getElementById("error")
-            .classList.remove("hidden");
-
+          errorBlock.classList.remove("hidden");
           return;
-
         }
 
-
-        document
-          .getElementById("bookingContent")
-          .classList.remove("hidden");
-
+        bookingContent.classList.remove("hidden");
 
         renderDates();
 
-      }
-
-      catch (error) {
-
+      } catch (error) {
         console.error(error);
 
-        document
-          .getElementById("loading")
-          .classList.add("hidden");
+        loadingBlock.classList.add("hidden");
 
-        document
-          .getElementById("error")
-          .classList.remove("hidden");
+        errorBlock.textContent =
+          "Не удалось загрузить расписание. Попробуй позже.";
 
+        errorBlock.classList.remove("hidden");
       }
-
     }
 
 
     function renderDates() {
-
-      datesContainer.innerHTML = "";
-
-
       const uniqueDates = [
         ...new Set(
           slots.map(slot => slot.slot_date)
         )
       ];
 
-
       uniqueDates.forEach(date => {
-
         const button =
           document.createElement("button");
 
-
         button.textContent =
           formatDate(date);
-
-
-        button.dataset.date =
-          date;
-
 
         button.addEventListener(
           "click",
           () => selectDate(date, button)
         );
 
-
         datesContainer.appendChild(button);
-
       });
-
     }
 
 
     function selectDate(date, button) {
-
       selectedDate = date;
-
       selectedTime = null;
-
       selectedSlotId = null;
-
 
       document
         .querySelectorAll("#dates button")
@@ -328,34 +336,26 @@
           btn.classList.remove("selected")
         );
 
-
       button.classList.add("selected");
-
 
       document.getElementById(
         "selectedDate"
       ).textContent =
         "Дата: " + formatDate(date);
 
-
       document.getElementById(
         "selectedTime"
       ).textContent =
         "Время: —";
 
-
       confirmButton.disabled = true;
 
-
       renderTimes(date);
-
     }
 
 
     function renderTimes(date) {
-
       timesContainer.innerHTML = "";
-
 
       const dateSlots =
         slots.filter(
@@ -364,38 +364,29 @@
             slot.is_available === true
         );
 
-
       dateSlots.forEach(slot => {
-
         const button =
           document.createElement("button");
-
 
         button.textContent =
           formatTime(slot.slot_time);
 
-
         button.addEventListener(
           "click",
           () => {
-
             document
               .querySelectorAll("#times button")
               .forEach(btn =>
                 btn.classList.remove("selected")
               );
 
-
             button.classList.add("selected");
-
 
             selectedTime =
               slot.slot_time;
 
-
             selectedSlotId =
               slot.id;
-
 
             document.getElementById(
               "selectedTime"
@@ -403,63 +394,133 @@
               "Время: " +
               formatTime(slot.slot_time);
 
-
             confirmButton.disabled =
               false;
-
           }
         );
 
-
         timesContainer.appendChild(button);
-
       });
-
 
       document
         .getElementById("timeBlock")
         .classList.remove("hidden");
-
     }
 
 
     confirmButton.addEventListener(
       "click",
-      () => {
+      async () => {
 
         if (!selectedSlotId) {
           return;
         }
 
+        const bookedDate =
+          selectedDate;
 
-        const booking = {
-          slot_id: selectedSlotId,
-          date: selectedDate,
-          time: selectedTime,
-          telegram_id: user?.id || null,
-          first_name: user?.first_name || "",
-          username: user?.username || ""
-        };
+        const bookedTime =
+          selectedTime;
 
+        confirmButton.disabled = true;
+        confirmButton.textContent =
+          "Записываю...";
 
-        console.log(
-          "Выбранная запись:",
-          booking
-        );
+        try {
+          const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
+            {
+              method: "POST",
 
+              headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json"
+              },
 
-        alert(
-          `Вы выбрали:\n\n` +
-          `${formatDate(selectedDate)}\n` +
-          `${formatTime(selectedTime)}`
-        );
+              body: JSON.stringify({
+                p_slot_id: selectedSlotId,
+                p_telegram_id:
+                  user?.id || null,
 
+                p_student_name:
+                  user?.first_name || "",
+
+                p_username:
+                  user?.username || ""
+              })
+            }
+          );
+
+          if (!response.ok) {
+            const errorText =
+              await response.text();
+
+            console.error(
+              "Booking error:",
+              response.status,
+              errorText
+            );
+
+            throw new Error(
+              "Ошибка бронирования"
+            );
+          }
+
+          const success =
+            await response.json();
+
+          if (!success) {
+            alert(
+              "Этот слот только что занял другой ученик. Выбери другое время."
+            );
+
+            confirmButton.textContent =
+              "Записаться";
+
+            await loadSlots();
+            return;
+          }
+
+          if (tg?.HapticFeedback) {
+            tg.HapticFeedback
+              .notificationOccurred("success");
+          }
+
+          bookingContent.classList.add(
+            "hidden"
+          );
+
+          document.getElementById(
+            "successDate"
+          ).textContent =
+            formatDate(bookedDate);
+
+          document.getElementById(
+            "successTime"
+          ).textContent =
+            formatTime(bookedTime);
+
+          successScreen.classList.remove(
+            "hidden"
+          );
+
+        } catch (error) {
+          console.error(error);
+
+          alert(
+            "Не удалось создать запись. Попробуй ещё раз."
+          );
+
+          confirmButton.disabled = false;
+          confirmButton.textContent =
+            "Записаться";
+        }
       }
     );
 
 
     loadSlots();
-
   </script>
 
 </body>
