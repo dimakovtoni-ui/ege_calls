@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  >
 
   <title>Запись на созвон</title>
 
@@ -16,29 +17,52 @@
       --blue: #2563eb;
       --blue-dark: #1d4ed8;
       --blue-soft: #eff6ff;
+
       --text: #111827;
       --muted: #6b7280;
+
       --border: #e5e7eb;
+
       --surface: #ffffff;
       --surface-soft: #f8fafc;
+
       --danger: #dc2626;
       --danger-soft: #fef2f2;
-      --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+
+      --success: #047857;
+      --success-soft: #ecfdf5;
+
+      --shadow:
+        0 8px 30px rgba(15, 23, 42, 0.06);
+
       --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
     }
 
+
     * {
       box-sizing: border-box;
     }
+
 
     html,
     body {
       margin: 0;
       padding: 0;
-      background: var(--tg-theme-bg-color, #f8fafc);
-      color: var(--tg-theme-text-color, var(--text));
+
+      background:
+        var(
+          --tg-theme-bg-color,
+          #f8fafc
+        );
+
+      color:
+        var(
+          --tg-theme-text-color,
+          #111827
+        );
+
       font-family:
         Inter,
         -apple-system,
@@ -47,13 +71,28 @@
         sans-serif;
     }
 
+
     body {
       min-height: 100vh;
+
       padding:
-        max(18px, env(safe-area-inset-top))
+        max(
+          18px,
+          env(safe-area-inset-top)
+        )
         16px
-        max(28px, env(safe-area-inset-bottom));
+        max(
+          28px,
+          env(safe-area-inset-bottom)
+        );
     }
+
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
 
     .app {
       width: 100%;
@@ -61,443 +100,999 @@
       margin: 0 auto;
     }
 
+
+    /* -------------------------
+       HERO
+    -------------------------- */
+
     .hero {
-      padding: 6px 2px 18px;
+      padding:
+        6px
+        2px
+        18px;
     }
 
+
     .eyebrow {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--blue);
       margin-bottom: 8px;
+
+      color: var(--blue);
+
+      font-size: 13px;
+      font-weight: 800;
+
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
+
 
     .hero h1 {
       margin: 0;
+
       font-size: 30px;
       line-height: 1.1;
+
       letter-spacing: -0.035em;
-      font-weight: 800;
+      font-weight: 850;
     }
 
-    .hero p {
-      margin: 10px 0 0;
-      color: var(--tg-theme-hint-color, var(--muted));
+
+    .hero-description {
+      margin:
+        10px
+        0
+        0;
+
+      color:
+        var(
+          --tg-theme-hint-color,
+          #6b7280
+        );
+
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
+
+
+    /* -------------------------
+       CURATOR
+    -------------------------- */
 
     .curator-card {
       display: flex;
       align-items: center;
+
       gap: 12px;
+
       margin-top: 18px;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow);
+
+      padding:
+        14px
+        16px;
+
+      background: #ffffff;
+      color: #111827;
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-md);
+
+      box-shadow:
+        var(--shadow);
     }
+
 
     .avatar {
       width: 44px;
       height: 44px;
-      flex: 0 0 44px;
-      border-radius: 14px;
+
+      flex:
+        0
+        0
+        44px;
+
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--blue), #60a5fa);
-      color: #fff;
-      font-weight: 800;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2563eb,
+          #60a5fa
+        );
+
+      color: #ffffff;
+
       font-size: 16px;
+      font-weight: 850;
     }
 
+
     .curator-name {
+      color: #111827;
+
       font-size: 15px;
-      font-weight: 750;
+      font-weight: 800;
     }
+
 
     .curator-role {
       margin-top: 3px;
+
+      color: #6b7280;
+
       font-size: 13px;
-      color: var(--muted);
     }
+
+
+    /* -------------------------
+       TABS
+    -------------------------- */
 
     .tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+
+      grid-template-columns:
+        1fr
+        1fr;
+
       gap: 8px;
+
       padding: 6px;
+
+      margin:
+        2px
+        0
+        22px;
+
       background: #eef2f7;
+
       border-radius: 18px;
-      margin: 2px 0 22px;
     }
+
 
     .tab {
+      padding:
+        12px
+        10px;
+
       border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 12px 10px;
       border-radius: 13px;
+
+      background: transparent;
+
+      color: #6b7280;
+
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 750;
+
       cursor: pointer;
+
+      transition:
+        0.18s ease;
     }
 
+
     .tab.active {
-      background: #fff;
+      background: #ffffff;
       color: var(--blue);
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+
+      box-shadow:
+        0
+        2px
+        10px
+        rgba(
+          15,
+          23,
+          42,
+          0.08
+        );
     }
+
+
+    /* -------------------------
+       SECTIONS
+    -------------------------- */
 
     .section {
       margin-bottom: 22px;
     }
 
+
     .section-title {
-      margin: 0 0 12px;
+      margin:
+        0
+        0
+        12px;
+
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 850;
+
+      letter-spacing: -0.01em;
     }
 
+
     .section-subtitle {
-      margin: -5px 0 12px;
-      color: var(--muted);
+      margin:
+        -5px
+        0
+        12px;
+
+      color:
+        var(
+          --tg-theme-hint-color,
+          #6b7280
+        );
+
       font-size: 13px;
       line-height: 1.45;
     }
 
+
+    /* -------------------------
+       DATES
+    -------------------------- */
+
     .dates {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+      grid-template-columns:
+        repeat(
+          3,
+          1fr
+        );
+
       gap: 10px;
     }
+
 
     .date-card {
       min-height: 92px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: var(--radius-md);
-      padding: 12px 8px;
+
+      padding:
+        12px
+        8px;
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-md);
+
+      background: #ffffff;
+      color: #111827;
+
       text-align: center;
+
       cursor: pointer;
+
+      transition:
+        transform 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
     }
 
-    .date-card.selected {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
+
+    .date-card:active {
+      transform: scale(0.98);
     }
+
+
+    .date-card.selected {
+      background:
+        var(--blue);
+
+      border-color:
+        var(--blue);
+
+      color: #ffffff;
+
+      box-shadow:
+        0
+        8px
+        20px
+        rgba(
+          37,
+          99,
+          235,
+          0.22
+        );
+    }
+
 
     .date-weekday {
       font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      opacity: 0.75;
+      font-weight: 850;
+
       letter-spacing: 0.04em;
+
+      text-transform: uppercase;
+
+      opacity: 0.75;
     }
+
 
     .date-day {
       margin-top: 5px;
+
       font-size: 25px;
+      font-weight: 900;
+
       line-height: 1;
-      font-weight: 850;
     }
+
 
     .date-month {
       margin-top: 5px;
+
       font-size: 12px;
+
       opacity: 0.8;
     }
 
+
+    /* -------------------------
+       TIMES
+    -------------------------- */
+
     .times {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+      grid-template-columns:
+        repeat(
+          3,
+          1fr
+        );
+
       gap: 10px;
     }
 
+
     .time-button {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: var(--radius-sm);
-      padding: 13px 8px;
+      padding:
+        13px
+        8px;
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-sm);
+
+      background: #ffffff;
+      color: #111827;
+
       font-size: 15px;
-      font-weight: 750;
+      font-weight: 800;
+
       cursor: pointer;
+
+      transition:
+        0.16s ease;
     }
 
+
     .time-button.selected {
-      background: var(--blue-soft);
-      border-color: var(--blue);
-      color: var(--blue);
-      box-shadow: inset 0 0 0 1px var(--blue);
+      background:
+        var(--blue-soft);
+
+      border-color:
+        var(--blue);
+
+      color:
+        var(--blue);
+
+      box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        var(--blue);
     }
+
+
+    /* -------------------------
+       FORM
+    -------------------------- */
 
     .field {
       width: 100%;
-      border: 1px solid var(--border);
+
+      padding:
+        15px
+        16px;
+
+      border:
+        1px solid
+        #e5e7eb;
+
       border-radius: 15px;
-      padding: 15px 16px;
-      background: var(--surface);
-      color: var(--text);
+
+      background: #ffffff;
+      color: #111827;
+
       font-size: 16px;
+
       outline: none;
+
+      transition:
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
     }
+
+
+    .field::placeholder {
+      color: #9ca3af;
+    }
+
 
     .field:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+      border-color:
+        var(--blue);
+
+      box-shadow:
+        0
+        0
+        0
+        3px
+        rgba(
+          37,
+          99,
+          235,
+          0.10
+        );
     }
 
-    .field + .field {
-      margin-top: 10px;
-    }
+
+    /* -------------------------
+       SUMMARY
+    -------------------------- */
 
     .summary-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
       padding: 18px;
-      box-shadow: var(--shadow);
+
+      background: #ffffff;
+      color: #111827;
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-lg);
+
+      box-shadow:
+        var(--shadow);
     }
 
+
     .summary-label {
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
       margin-bottom: 14px;
+
+      color: #6b7280;
+
+      font-size: 12px;
+      font-weight: 850;
+
+      letter-spacing: 0.05em;
+
+      text-transform: uppercase;
     }
+
 
     .summary-row {
       display: flex;
       align-items: center;
+
       gap: 12px;
-      padding: 10px 0;
+
+      padding:
+        10px
+        0;
     }
 
+
     .summary-row + .summary-row {
-      border-top: 1px solid var(--border);
+      border-top:
+        1px solid
+        #e5e7eb;
     }
+
 
     .summary-icon {
       width: 36px;
       height: 36px;
-      border-radius: 11px;
-      background: var(--blue-soft);
-      color: var(--blue);
+
+      flex:
+        0
+        0
+        36px;
+
       display: grid;
       place-items: center;
+
+      border-radius: 11px;
+
+      background:
+        var(--blue-soft);
+
+      color:
+        var(--blue);
+
       font-size: 17px;
-      flex: 0 0 36px;
     }
 
+
     .summary-caption {
+      color: #6b7280;
+
       font-size: 12px;
-      color: var(--muted);
     }
+
 
     .summary-value {
       margin-top: 2px;
+
+      color: #111827;
+
       font-size: 15px;
-      font-weight: 750;
+      font-weight: 800;
+
       overflow-wrap: anywhere;
     }
 
+
+    /* -------------------------
+       BUTTONS
+    -------------------------- */
+
     .primary-button {
       width: 100%;
+
       margin-top: 14px;
+
+      padding: 16px;
+
       border: none;
       border-radius: 16px;
-      padding: 16px;
-      background: var(--blue);
-      color: #fff;
+
+      background:
+        var(--blue);
+
+      color: #ffffff;
+
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 850;
+
       cursor: pointer;
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+
+      box-shadow:
+        0
+        10px
+        22px
+        rgba(
+          37,
+          99,
+          235,
+          0.22
+        );
+
+      transition:
+        0.18s ease;
     }
+
+
+    .primary-button:active {
+      transform:
+        translateY(1px);
+
+      background:
+        var(--blue-dark);
+    }
+
 
     .primary-button:disabled {
       opacity: 0.45;
+
       box-shadow: none;
+
       cursor: not-allowed;
     }
 
+
     .danger-button {
       width: 100%;
-      margin-top: 14px;
-      border: 1px solid #fecaca;
-      border-radius: 16px;
+
+      margin-top: 18px;
+
       padding: 15px;
-      background: var(--danger-soft);
-      color: var(--danger);
+
+      border:
+        1px solid
+        #fecaca;
+
+      border-radius: 16px;
+
+      background:
+        var(--danger-soft);
+
+      color:
+        var(--danger);
+
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 850;
+
       cursor: pointer;
     }
 
+
+    /* -------------------------
+       MESSAGES
+    -------------------------- */
+
     .message {
       padding: 16px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: var(--radius-md);
-      color: var(--muted);
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-md);
+
+      background: #ffffff;
+      color: #6b7280;
+
       font-size: 14px;
       line-height: 1.45;
     }
 
+
+    /* -------------------------
+       MY BOOKING
+    -------------------------- */
+
     .booking-card {
       padding: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
+
+      border:
+        1px solid
+        #e5e7eb;
+
+      border-radius:
+        var(--radius-lg);
+
+      background: #ffffff;
+
+      /*
+       ВАЖНО:
+       фиксируем цвет текста,
+       чтобы Telegram Dark Mode
+       не сделал его белым.
+      */
+      color: #111827;
+
+      box-shadow:
+        var(--shadow);
     }
+
+
+    .booking-card * {
+      color: inherit;
+    }
+
 
     .booking-status {
       display: inline-flex;
       align-items: center;
-      background: #ecfdf5;
-      color: #047857;
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
 
-    .booking-title {
-      margin: 0;
-      font-size: 20px;
+      margin-bottom: 18px;
+
+      padding:
+        7px
+        11px;
+
+      border-radius: 999px;
+
+      background:
+        var(--success-soft);
+
+      color:
+        var(--success) !important;
+
+      font-size: 12px;
       font-weight: 850;
     }
 
-    .booking-meta {
-      margin-top: 16px;
-      display: grid;
-      gap: 10px;
+
+    .booking-title {
+      margin:
+        0
+        0
+        20px;
+
+      color: #111827 !important;
+
+      font-size: 21px;
+      font-weight: 900;
+
+      letter-spacing: -0.025em;
     }
+
+
+    .booking-meta {
+      display: grid;
+
+      gap: 4px;
+    }
+
 
     .booking-meta-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+
+      gap: 12px;
+
+      padding:
+        12px
+        0;
+
+      border-bottom:
+        1px solid
+        #f0f2f5;
+
+      color: #111827 !important;
+
       font-size: 15px;
-      font-weight: 650;
+      font-weight: 700;
     }
+
+
+    .booking-meta-item:last-child {
+      border-bottom: none;
+    }
+
+
+    .booking-meta-icon {
+      width: 34px;
+      height: 34px;
+
+      flex:
+        0
+        0
+        34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        var(--blue-soft);
+
+      font-size: 16px;
+    }
+
+
+    #myBookingDate,
+    #myBookingTime,
+    #myBookingCurator {
+      color: #111827 !important;
+    }
+
+
+    /* -------------------------
+       UTILITIES
+    -------------------------- */
 
     .hidden {
       display: none !important;
     }
 
-    @media (max-width: 390px) {
+
+    @media (
+      max-width: 390px
+    ) {
+
       .dates,
       .times {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+          repeat(
+            2,
+            1fr
+          );
       }
+
 
       .hero h1 {
         font-size: 27px;
       }
+
     }
+
   </style>
 </head>
 
+
 <body>
+
   <main class="app">
 
+    <!-- HEADER -->
+
     <section class="hero">
-      <div class="eyebrow">100балльный репетитор</div>
+
+      <div class="eyebrow">
+        100балльный репетитор
+      </div>
+
 
       <h1 id="hello">
         Запись на созвон
       </h1>
 
-      <p>
-        Выбери удобный день и время для личного созвона с куратором.
+
+      <p class="hero-description">
+        Выбери удобный день и время
+        для личного созвона
+        с куратором.
       </p>
 
+
       <div class="curator-card">
-        <div class="avatar">ДА</div>
+
+        <div class="avatar">
+          ДА
+        </div>
+
 
         <div>
+
           <div class="curator-name">
             Димаков Антон
           </div>
 
+
           <div class="curator-role">
             Куратор курса подготовки к ЕГЭ
           </div>
+
         </div>
+
       </div>
+
     </section>
 
 
-    <div id="telegramError" class="message hidden">
-      Не удалось получить данные Telegram-пользователя.
-      Закрой Mini App и открой его заново через кнопку бота.
+    <!-- TELEGRAM ERROR -->
+
+    <div
+      id="telegramError"
+      class="message hidden"
+    >
+      Не удалось получить данные
+      Telegram-пользователя.
+      Закрой Mini App и открой его
+      заново через кнопку бота.
     </div>
 
 
     <div id="appContent">
 
+
+      <!-- NAVIGATION -->
+
       <nav class="tabs">
-        <button id="bookingTab" class="tab active">
+
+        <button
+          id="bookingTab"
+          class="tab active"
+        >
           Записаться
         </button>
 
-        <button id="myBookingTab" class="tab">
+
+        <button
+          id="myBookingTab"
+          class="tab"
+        >
           Моя запись
         </button>
+
       </nav>
 
 
+      <!-- BOOKING PAGE -->
+
       <section id="bookingPage">
 
-        <div id="loading" class="message">
+
+        <div
+          id="loading"
+          class="message"
+        >
           Загружаю свободное время...
         </div>
 
-        <div id="error" class="message hidden"></div>
 
-        <div id="bookingContent" class="hidden">
+        <div
+          id="error"
+          class="message hidden"
+        ></div>
+
+
+        <div
+          id="bookingContent"
+          class="hidden"
+        >
+
+
+          <!-- DATE -->
 
           <section class="section">
+
             <h2 class="section-title">
               Выбери дату
             </h2>
 
+
             <div class="section-subtitle">
-              Показываем только дни со свободными слотами
+              Показываем только дни
+              со свободными слотами
             </div>
 
-            <div id="dates" class="dates"></div>
+
+            <div
+              id="dates"
+              class="dates"
+            ></div>
+
           </section>
 
 
-          <section id="timeBlock" class="section hidden">
+          <!-- TIME -->
+
+          <section
+            id="timeBlock"
+            class="section hidden"
+          >
+
             <h2 class="section-title">
               Свободное время
             </h2>
 
-            <div id="times" class="times"></div>
+
+            <div
+              id="times"
+              class="times"
+            ></div>
+
           </section>
 
 
+          <!-- NAME -->
+
           <section class="section">
+
             <h2 class="section-title">
               Имя и фамилия
             </h2>
 
+
             <div class="section-subtitle">
-              Укажи, пожалуйста, как тебя зовут
+              Укажи, пожалуйста,
+              как тебя зовут
             </div>
+
 
             <input
               id="studentName"
@@ -505,42 +1100,60 @@
               type="text"
               placeholder="Например: Иван Иванов"
               autocomplete="name"
-            />
+            >
+
           </section>
 
 
+          <!-- TASK -->
+
           <section class="section">
+
             <h2 class="section-title">
               Какое задание разберём?
             </h2>
 
+
             <div class="section-subtitle">
-              Напиши номер задания ЕГЭ, которое хочешь разобрать на созвоне
+              Напиши номер задания ЕГЭ,
+              которое хочешь разобрать
+              на созвоне
             </div>
+
 
             <input
               id="taskNumber"
               class="field"
               type="text"
-              placeholder="Например: №13 или №19"
-              inputmode="text"
-            />
+              placeholder="Например: №13"
+            >
+
           </section>
 
 
+          <!-- SUMMARY -->
+
           <section class="summary-card">
+
 
             <div class="summary-label">
               Твой выбор
             </div>
 
+
             <div class="summary-row">
-              <div class="summary-icon">📅</div>
+
+              <div class="summary-icon">
+                📅
+              </div>
+
 
               <div>
+
                 <div class="summary-caption">
                   Дата
                 </div>
+
 
                 <div
                   id="selectedDate"
@@ -548,17 +1161,25 @@
                 >
                   Не выбрана
                 </div>
+
               </div>
+
             </div>
 
 
             <div class="summary-row">
-              <div class="summary-icon">🕒</div>
+
+              <div class="summary-icon">
+                🕒
+              </div>
+
 
               <div>
+
                 <div class="summary-caption">
                   Время
                 </div>
+
 
                 <div
                   id="selectedTime"
@@ -566,17 +1187,25 @@
                 >
                   Не выбрано
                 </div>
+
               </div>
+
             </div>
 
 
             <div class="summary-row">
-              <div class="summary-icon">👤</div>
+
+              <div class="summary-icon">
+                👤
+              </div>
+
 
               <div>
+
                 <div class="summary-caption">
                   Ученик
                 </div>
+
 
                 <div
                   id="selectedStudent"
@@ -584,17 +1213,25 @@
                 >
                   Не указано
                 </div>
+
               </div>
+
             </div>
 
 
             <div class="summary-row">
-              <div class="summary-icon">✏️</div>
+
+              <div class="summary-icon">
+                ✏️
+              </div>
+
 
               <div>
+
                 <div class="summary-caption">
-                  Задание для разбора
+                  Задание
                 </div>
+
 
                 <div
                   id="selectedTask"
@@ -602,7 +1239,9 @@
                 >
                   Не указано
                 </div>
+
               </div>
+
             </div>
 
 
@@ -617,52 +1256,90 @@
           </section>
 
         </div>
+
       </section>
 
 
-      <section id="myBookingPage" class="hidden">
+      <!-- MY BOOKING PAGE -->
 
-        <div id="myBookingLoading" class="message">
+      <section
+        id="myBookingPage"
+        class="hidden"
+      >
+
+
+        <div
+          id="myBookingLoading"
+          class="message"
+        >
           Загружаю твою запись...
         </div>
+
 
         <div
           id="noBooking"
           class="message hidden"
         >
-          У тебя пока нет активной записи.
+          У тебя пока нет
+          активной записи.
         </div>
+
 
         <div
           id="myBookingCard"
           class="booking-card hidden"
         >
+
+
           <div class="booking-status">
             ● Запись подтверждена
           </div>
+
 
           <h2 class="booking-title">
             Созвон с куратором
           </h2>
 
+
           <div class="booking-meta">
 
+
             <div class="booking-meta-item">
-              <span>📅</span>
+
+              <div class="booking-meta-icon">
+                📅
+              </div>
+
               <span id="myBookingDate"></span>
+
             </div>
 
+
             <div class="booking-meta-item">
-              <span>🕒</span>
+
+              <div class="booking-meta-icon">
+                🕒
+              </div>
+
               <span id="myBookingTime"></span>
+
             </div>
 
+
             <div class="booking-meta-item">
-              <span>👤</span>
-              <span>Димаков Антон</span>
+
+              <div class="booking-meta-icon">
+                👤
+              </div>
+
+              <span id="myBookingCurator">
+                Димаков Антон
+              </span>
+
             </div>
 
           </div>
+
 
           <button
             id="cancelBooking"
@@ -670,262 +1347,506 @@
           >
             Отменить запись
           </button>
+
         </div>
 
       </section>
 
     </div>
+
   </main>
 
 
   <script>
+
+    /* -------------------------
+       SUPABASE
+    -------------------------- */
+
     const SUPABASE_URL =
       "https://kycanipxibndwemdfaon.supabase.co";
 
+
     const SUPABASE_KEY =
       "sb_publishable_6jJtpcJUt5Z2wNB2qfOgTw_t_wxyLQi";
+
 
     const TABLE_NAME =
       "ege_calls";
 
 
+    /* -------------------------
+       TELEGRAM
+    -------------------------- */
+
     const tg =
       window.Telegram?.WebApp;
 
+
     if (tg) {
+
       tg.ready();
+
       tg.expand();
+
     }
 
 
     const user =
-      tg?.initDataUnsafe?.user || null;
+      tg?.initDataUnsafe?.user
+      || null;
 
 
     const hello =
-      document.getElementById("hello");
+      document.getElementById(
+        "hello"
+      );
+
 
     const telegramError =
-      document.getElementById("telegramError");
+      document.getElementById(
+        "telegramError"
+      );
+
 
     const appContent =
-      document.getElementById("appContent");
-
-    const studentNameInput =
-      document.getElementById("studentName");
-
-    const taskNumberInput =
-      document.getElementById("taskNumber");
-
-    const selectedStudent =
-      document.getElementById("selectedStudent");
-
-    const selectedTask =
-      document.getElementById("selectedTask");
+      document.getElementById(
+        "appContent"
+      );
 
 
     if (!user?.id) {
+
       hello.textContent =
         "Запись на созвон";
 
-      telegramError.classList.remove(
-        "hidden"
-      );
 
-      appContent.classList.add(
-        "hidden"
-      );
-    } else {
+      telegramError
+        .classList
+        .remove(
+          "hidden"
+        );
+
+
+      appContent
+        .classList
+        .add(
+          "hidden"
+        );
+
+    }
+
+    else {
+
       hello.textContent =
         `Привет, ${user.first_name || "ученик"} 👋`;
+
     }
 
 
+    /* -------------------------
+       STATE
+    -------------------------- */
+
     let slots = [];
 
-    let selectedDate = null;
-    let selectedTime = null;
-    let selectedSlotId = null;
 
-    let myBooking = null;
+    let selectedDate =
+      null;
+
+
+    let selectedTime =
+      null;
+
+
+    let selectedSlotId =
+      null;
+
+
+    let myBooking =
+      null;
 
 
     const datesContainer =
-      document.getElementById("dates");
+      document.getElementById(
+        "dates"
+      );
+
 
     const timesContainer =
-      document.getElementById("times");
+      document.getElementById(
+        "times"
+      );
+
 
     const confirmButton =
-      document.getElementById("confirm");
+      document.getElementById(
+        "confirm"
+      );
 
 
-    function dateParts(dateString) {
+    const studentNameInput =
+      document.getElementById(
+        "studentName"
+      );
+
+
+    const taskNumberInput =
+      document.getElementById(
+        "taskNumber"
+      );
+
+
+    const selectedStudent =
+      document.getElementById(
+        "selectedStudent"
+      );
+
+
+    const selectedTask =
+      document.getElementById(
+        "selectedTask"
+      );
+
+
+    /* -------------------------
+       FORMATTERS
+    -------------------------- */
+
+    function dateParts(
+      dateString
+    ) {
+
       const date =
-        new Date(dateString + "T00:00:00");
+        new Date(
+          dateString
+          +
+          "T00:00:00"
+        );
+
 
       return {
+
         weekday:
           new Intl.DateTimeFormat(
             "ru-RU",
-            { weekday: "short" }
+            {
+              weekday:
+                "short"
+            }
           )
           .format(date)
-          .replace(".", "")
+          .replace(
+            ".",
+            ""
+          )
           .toUpperCase(),
+
 
         day:
           new Intl.DateTimeFormat(
             "ru-RU",
-            { day: "numeric" }
-          ).format(date),
+            {
+              day:
+                "numeric"
+            }
+          )
+          .format(date),
+
 
         month:
           new Intl.DateTimeFormat(
             "ru-RU",
-            { month: "short" }
+            {
+              month:
+                "short"
+            }
           )
           .format(date)
-          .replace(".", "")
+          .replace(
+            ".",
+            ""
+          )
+
       };
+
     }
 
 
-    function formatDate(dateString) {
+    function formatDate(
+      dateString
+    ) {
+
       const date =
-        new Date(dateString + "T00:00:00");
+        new Date(
+          dateString
+          +
+          "T00:00:00"
+        );
+
 
       return new Intl.DateTimeFormat(
         "ru-RU",
         {
-          weekday: "long",
-          day: "numeric",
-          month: "long"
+          weekday:
+            "long",
+
+          day:
+            "numeric",
+
+          month:
+            "long"
         }
-      ).format(date);
+      )
+      .format(date);
+
     }
 
 
-    function formatTime(timeString) {
-      return timeString.slice(0, 5);
+    function formatTime(
+      timeString
+    ) {
+
+      return timeString
+        .slice(
+          0,
+          5
+        );
+
     }
 
+
+    /* -------------------------
+       BUTTON STATE
+    -------------------------- */
 
     function updateConfirmState() {
+
       const studentName =
-        studentNameInput.value.trim();
+        studentNameInput
+          .value
+          .trim();
+
 
       const taskNumber =
-        taskNumberInput.value.trim();
+        taskNumberInput
+          .value
+          .trim();
+
 
       confirmButton.disabled =
         !(
-          selectedSlotId &&
-          selectedDate &&
-          selectedTime &&
-          studentName &&
+          selectedSlotId
+          &&
+          selectedDate
+          &&
+          selectedTime
+          &&
+          studentName
+          &&
           taskNumber
         );
+
     }
 
 
-    studentNameInput.addEventListener(
-      "input",
-      () => {
-        const value =
-          studentNameInput.value.trim();
+    studentNameInput
+      .addEventListener(
+        "input",
+        () => {
 
-        selectedStudent.textContent =
-          value || "Не указано";
-
-        updateConfirmState();
-      }
-    );
+          const value =
+            studentNameInput
+              .value
+              .trim();
 
 
-    taskNumberInput.addEventListener(
-      "input",
-      () => {
-        const value =
-          taskNumberInput.value.trim();
+          selectedStudent
+            .textContent =
+              value
+              ||
+              "Не указано";
 
-        selectedTask.textContent =
-          value || "Не указано";
 
-        updateConfirmState();
-      }
-    );
+          updateConfirmState();
 
+        }
+      );
+
+
+    taskNumberInput
+      .addEventListener(
+        "input",
+        () => {
+
+          const value =
+            taskNumberInput
+              .value
+              .trim();
+
+
+          selectedTask
+            .textContent =
+              value
+              ||
+              "Не указано";
+
+
+          updateConfirmState();
+
+        }
+      );
+
+
+    /* -------------------------
+       RESET
+    -------------------------- */
 
     function resetSelection() {
-      selectedDate = null;
-      selectedTime = null;
-      selectedSlotId = null;
 
-      datesContainer.innerHTML = "";
-      timesContainer.innerHTML = "";
+      selectedDate =
+        null;
+
+
+      selectedTime =
+        null;
+
+
+      selectedSlotId =
+        null;
+
+
+      datesContainer
+        .innerHTML =
+          "";
+
+
+      timesContainer
+        .innerHTML =
+          "";
+
 
       document
-        .getElementById("timeBlock")
-        .classList.add("hidden");
+        .getElementById(
+          "timeBlock"
+        )
+        .classList
+        .add(
+          "hidden"
+        );
 
-      document.getElementById(
-        "selectedDate"
-      ).textContent =
-        "Не выбрана";
 
-      document.getElementById(
-        "selectedTime"
-      ).textContent =
-        "Не выбрано";
+      document
+        .getElementById(
+          "selectedDate"
+        )
+        .textContent =
+          "Не выбрана";
+
+
+      document
+        .getElementById(
+          "selectedTime"
+        )
+        .textContent =
+          "Не выбрано";
+
 
       updateConfirmState();
+
     }
 
 
+    /* -------------------------
+       LOAD SLOTS
+    -------------------------- */
+
     async function loadSlots() {
+
       if (!user?.id) {
         return;
       }
 
+
       resetSelection();
 
+
       const loading =
-        document.getElementById("loading");
+        document.getElementById(
+          "loading"
+        );
+
 
       const error =
-        document.getElementById("error");
+        document.getElementById(
+          "error"
+        );
+
 
       const content =
         document.getElementById(
           "bookingContent"
         );
 
-      loading.classList.remove("hidden");
-      error.classList.add("hidden");
-      content.classList.add("hidden");
 
-
-      try {
-        const response = await fetch(
-          `${SUPABASE_URL}/rest/v1/${TABLE_NAME}` +
-          `?select=id,slot_date,slot_time,is_available` +
-          `&is_available=eq.true` +
-          `&order=slot_date.asc,slot_time.asc`,
-          {
-            headers: {
-              apikey: SUPABASE_KEY,
-              Authorization:
-                `Bearer ${SUPABASE_KEY}`
-            }
-          }
+      loading
+        .classList
+        .remove(
+          "hidden"
         );
 
 
+      error
+        .classList
+        .add(
+          "hidden"
+        );
+
+
+      content
+        .classList
+        .add(
+          "hidden"
+        );
+
+
+      try {
+
+        const response =
+          await fetch(
+
+            `${SUPABASE_URL}/rest/v1/${TABLE_NAME}`
+            +
+            `?select=id,slot_date,slot_time,is_available`
+            +
+            `&is_available=eq.true`
+            +
+            `&order=slot_date.asc,slot_time.asc`,
+
+            {
+
+              headers: {
+
+                apikey:
+                  SUPABASE_KEY,
+
+
+                Authorization:
+                  `Bearer ${SUPABASE_KEY}`
+
+              }
+
+            }
+
+          );
+
+
         if (!response.ok) {
+
           throw new Error(
             await response.text()
           );
+
         }
 
 
@@ -933,91 +1854,156 @@
           await response.json();
 
 
-        loading.classList.add("hidden");
-
-
-        if (slots.length === 0) {
-          error.textContent =
-            "Сейчас свободных слотов нет.";
-
-          error.classList.remove(
+        loading
+          .classList
+          .add(
             "hidden"
           );
 
+
+        if (
+          slots.length
+          ===
+          0
+        ) {
+
+          error.textContent =
+            "Сейчас свободных слотов нет.";
+
+
+          error
+            .classList
+            .remove(
+              "hidden"
+            );
+
+
           return;
+
         }
 
 
-        content.classList.remove(
-          "hidden"
-        );
+        content
+          .classList
+          .remove(
+            "hidden"
+          );
+
 
         renderDates();
 
-      } catch (errorObject) {
-        console.error(errorObject);
+      }
 
-        loading.classList.add("hidden");
+      catch (errorObject) {
+
+        console.error(
+          errorObject
+        );
+
+
+        loading
+          .classList
+          .add(
+            "hidden"
+          );
+
 
         error.textContent =
           "Не удалось загрузить расписание.";
 
-        error.classList.remove(
-          "hidden"
-        );
+
+        error
+          .classList
+          .remove(
+            "hidden"
+          );
+
       }
+
     }
 
 
+    /* -------------------------
+       DATES
+    -------------------------- */
+
     function renderDates() {
-      datesContainer.innerHTML = "";
 
-      const uniqueDates = [
-        ...new Set(
-          slots.map(
-            slot => slot.slot_date
+      datesContainer
+        .innerHTML =
+          "";
+
+
+      const uniqueDates =
+        [
+          ...new Set(
+            slots.map(
+              slot =>
+                slot.slot_date
+            )
           )
-        )
-      ];
+        ];
 
 
-      uniqueDates.forEach(date => {
-        const parts =
-          dateParts(date);
+      uniqueDates
+        .forEach(
+          date => {
 
-        const button =
-          document.createElement(
-            "button"
-          );
-
-        button.className =
-          "date-card";
-
-        button.innerHTML = `
-          <div class="date-weekday">
-            ${parts.weekday}
-          </div>
-
-          <div class="date-day">
-            ${parts.day}
-          </div>
-
-          <div class="date-month">
-            ${parts.month}
-          </div>
-        `;
+            const parts =
+              dateParts(
+                date
+              );
 
 
-        button.addEventListener(
-          "click",
-          () => selectDate(date, button)
+            const button =
+              document
+                .createElement(
+                  "button"
+                );
+
+
+            button.className =
+              "date-card";
+
+
+            button.innerHTML =
+              `
+                <div class="date-weekday">
+                  ${parts.weekday}
+                </div>
+
+                <div class="date-day">
+                  ${parts.day}
+                </div>
+
+                <div class="date-month">
+                  ${parts.month}
+                </div>
+              `;
+
+
+            button
+              .addEventListener(
+                "click",
+                () => {
+
+                  selectDate(
+                    date,
+                    button
+                  );
+
+                }
+              );
+
+
+            datesContainer
+              .appendChild(
+                button
+              );
+
+          }
         );
 
-
-        datesContainer.appendChild(
-          button
-        );
-      });
     }
 
 
@@ -1025,11 +2011,14 @@
       date,
       button
     ) {
+
       selectedDate =
         date;
 
+
       selectedTime =
         null;
+
 
       selectedSlotId =
         null;
@@ -1039,260 +2028,382 @@
         .querySelectorAll(
           ".date-card"
         )
-        .forEach(item =>
-          item.classList.remove(
-            "selected"
-          )
+        .forEach(
+          item => {
+
+            item
+              .classList
+              .remove(
+                "selected"
+              );
+
+          }
         );
 
 
-      button.classList.add(
-        "selected"
-      );
+      button
+        .classList
+        .add(
+          "selected"
+        );
 
 
-      document.getElementById(
-        "selectedDate"
-      ).textContent =
-        formatDate(date);
+      document
+        .getElementById(
+          "selectedDate"
+        )
+        .textContent =
+          formatDate(
+            date
+          );
 
 
-      document.getElementById(
-        "selectedTime"
-      ).textContent =
-        "Не выбрано";
+      document
+        .getElementById(
+          "selectedTime"
+        )
+        .textContent =
+          "Не выбрано";
 
 
       updateConfirmState();
 
-      renderTimes(date);
+
+      renderTimes(
+        date
+      );
+
     }
 
 
-    function renderTimes(date) {
-      timesContainer.innerHTML =
-        "";
+    /* -------------------------
+       TIMES
+    -------------------------- */
+
+    function renderTimes(
+      date
+    ) {
+
+      timesContainer
+        .innerHTML =
+          "";
 
 
       const dateSlots =
         slots.filter(
           slot =>
-            slot.slot_date ===
+            slot.slot_date
+            ===
             date
         );
 
 
-      dateSlots.forEach(slot => {
-        const button =
-          document.createElement(
-            "button"
-          );
+      dateSlots
+        .forEach(
+          slot => {
 
-        button.className =
-          "time-button";
-
-        button.textContent =
-          formatTime(
-            slot.slot_time
-          );
+            const button =
+              document
+                .createElement(
+                  "button"
+                );
 
 
-        button.addEventListener(
-          "click",
-          () => {
-
-            document
-              .querySelectorAll(
-                ".time-button"
-              )
-              .forEach(item =>
-                item.classList.remove(
-                  "selected"
-                )
-              );
+            button.className =
+              "time-button";
 
 
-            button.classList.add(
-              "selected"
-            );
-
-
-            selectedTime =
-              slot.slot_time;
-
-            selectedSlotId =
-              slot.id;
-
-
-            document.getElementById(
-              "selectedTime"
-            ).textContent =
+            button.textContent =
               formatTime(
                 slot.slot_time
               );
 
 
-            updateConfirmState();
+            button
+              .addEventListener(
+                "click",
+                () => {
+
+                  document
+                    .querySelectorAll(
+                      ".time-button"
+                    )
+                    .forEach(
+                      item => {
+
+                        item
+                          .classList
+                          .remove(
+                            "selected"
+                          );
+
+                      }
+                    );
+
+
+                  button
+                    .classList
+                    .add(
+                      "selected"
+                    );
+
+
+                  selectedTime =
+                    slot.slot_time;
+
+
+                  selectedSlotId =
+                    slot.id;
+
+
+                  document
+                    .getElementById(
+                      "selectedTime"
+                    )
+                    .textContent =
+                      formatTime(
+                        slot.slot_time
+                      );
+
+
+                  updateConfirmState();
+
+                }
+              );
+
+
+            timesContainer
+              .appendChild(
+                button
+              );
+
           }
         );
-
-
-        timesContainer.appendChild(
-          button
-        );
-      });
 
 
       document
         .getElementById(
           "timeBlock"
         )
-        .classList.remove(
+        .classList
+        .remove(
           "hidden"
         );
+
     }
 
 
-    confirmButton.addEventListener(
-      "click",
-      async () => {
+    /* -------------------------
+       CREATE BOOKING
+    -------------------------- */
 
-        const studentName =
-          studentNameInput.value.trim();
+    confirmButton
+      .addEventListener(
+        "click",
+        async () => {
 
-        const taskNumber =
-          taskNumberInput.value.trim();
-
-
-        if (!studentName) {
-          alert(
-            "Укажи имя и фамилию"
-          );
-
-          studentNameInput.focus();
-
-          return;
-        }
+          const studentName =
+            studentNameInput
+              .value
+              .trim();
 
 
-        if (!taskNumber) {
-          alert(
-            "Укажи номер задания для разбора"
-          );
-
-          taskNumberInput.focus();
-
-          return;
-        }
+          const taskNumber =
+            taskNumberInput
+              .value
+              .trim();
 
 
-        if (
-          !selectedSlotId ||
-          !user?.id
-        ) {
-          return;
-        }
+          if (!studentName) {
 
-
-        confirmButton.disabled =
-          true;
-
-        confirmButton.textContent =
-          "Записываю...";
-
-
-        try {
-          const response =
-            await fetch(
-              `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
-              {
-                method: "POST",
-
-                headers: {
-                  apikey:
-                    SUPABASE_KEY,
-
-                  Authorization:
-                    `Bearer ${SUPABASE_KEY}`,
-
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify({
-                    p_slot_id:
-                      selectedSlotId,
-
-                    p_telegram_id:
-                      Number(user.id),
-
-                    p_student_name:
-                      studentName,
-
-                    p_username:
-                      user.username || "",
-
-                    p_task_number:
-                      taskNumber
-                  })
-              }
-            );
-
-
-          if (!response.ok) {
-            throw new Error(
-              await response.text()
-            );
-          }
-
-
-          const success =
-            await response.json();
-
-
-          if (!success) {
             alert(
-              "Этот слот уже занят. Выбери другое время."
+              "Укажи имя и фамилию"
             );
 
-            await loadSlots();
+
+            studentNameInput
+              .focus();
+
 
             return;
+
           }
 
 
-          tg?.HapticFeedback
-            ?.notificationOccurred(
-              "success"
+          if (!taskNumber) {
+
+            alert(
+              "Укажи номер задания для разбора"
             );
 
 
-          alert(
-            "Запись подтверждена 🎉"
-          );
+            taskNumberInput
+              .focus();
 
 
-          showMyBookingPage();
+            return;
 
-        } catch (error) {
-          console.error(error);
+          }
 
-          alert(
-            "Не удалось создать запись."
-          );
 
-        } finally {
+          if (
+            !selectedSlotId
+            ||
+            !user?.id
+          ) {
+
+            return;
+
+          }
+
+
+          confirmButton.disabled =
+            true;
+
+
           confirmButton.textContent =
-            "Записаться на созвон";
+            "Записываю...";
 
-          updateConfirmState();
+
+          try {
+
+            const response =
+              await fetch(
+
+                `${SUPABASE_URL}/rest/v1/rpc/book_slot`,
+
+                {
+
+                  method:
+                    "POST",
+
+
+                  headers: {
+
+                    apikey:
+                      SUPABASE_KEY,
+
+
+                    Authorization:
+                      `Bearer ${SUPABASE_KEY}`,
+
+
+                    "Content-Type":
+                      "application/json"
+
+                  },
+
+
+                  body:
+                    JSON.stringify({
+
+                      p_slot_id:
+                        selectedSlotId,
+
+
+                      p_telegram_id:
+                        Number(
+                          user.id
+                        ),
+
+
+                      p_student_name:
+                        studentName,
+
+
+                      p_username:
+                        user.username
+                        ||
+                        "",
+
+
+                      p_task_number:
+                        taskNumber
+
+                    })
+
+                }
+
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                await response.text()
+              );
+
+            }
+
+
+            const success =
+              await response.json();
+
+
+            if (!success) {
+
+              alert(
+                "Этот слот уже занят. Выбери другое время."
+              );
+
+
+              await loadSlots();
+
+
+              return;
+
+            }
+
+
+            tg
+              ?.HapticFeedback
+              ?.notificationOccurred(
+                "success"
+              );
+
+
+            alert(
+              "Запись подтверждена 🎉"
+            );
+
+
+            showMyBookingPage();
+
+          }
+
+          catch (error) {
+
+            console.error(
+              error
+            );
+
+
+            alert(
+              "Не удалось создать запись."
+            );
+
+          }
+
+          finally {
+
+            confirmButton.textContent =
+              "Записаться на созвон";
+
+
+            updateConfirmState();
+
+          }
+
         }
-      }
-    );
+      );
 
+
+    /* -------------------------
+       MY BOOKING
+    -------------------------- */
 
     async function loadMyBooking() {
+
       if (!user?.id) {
         return;
       }
@@ -1303,10 +2414,12 @@
           "myBookingLoading"
         );
 
+
       const noBooking =
         document.getElementById(
           "noBooking"
         );
+
 
       const card =
         document.getElementById(
@@ -1317,50 +2430,78 @@
       loading.textContent =
         "Загружаю твою запись...";
 
-      loading.classList.remove(
-        "hidden"
-      );
 
-      noBooking.classList.add(
-        "hidden"
-      );
+      loading
+        .classList
+        .remove(
+          "hidden"
+        );
 
-      card.classList.add(
-        "hidden"
-      );
+
+      noBooking
+        .classList
+        .add(
+          "hidden"
+        );
+
+
+      card
+        .classList
+        .add(
+          "hidden"
+        );
 
 
       try {
+
         const response =
           await fetch(
+
             `${SUPABASE_URL}/rest/v1/rpc/get_my_booking`,
+
             {
-              method: "POST",
+
+              method:
+                "POST",
+
 
               headers: {
+
                 apikey:
                   SUPABASE_KEY,
+
 
                 Authorization:
                   `Bearer ${SUPABASE_KEY}`,
 
+
                 "Content-Type":
                   "application/json"
+
               },
+
 
               body:
                 JSON.stringify({
+
                   p_telegram_id:
-                    Number(user.id)
+                    Number(
+                      user.id
+                    )
+
                 })
+
             }
+
           );
 
 
         if (!response.ok) {
+
           throw new Error(
             await response.text()
           );
+
         }
 
 
@@ -1368,23 +2509,34 @@
           await response.json();
 
 
-        loading.classList.add(
-          "hidden"
-        );
-
-
-        if (
-          !result ||
-          result.length === 0
-        ) {
-          myBooking =
-            null;
-
-          noBooking.classList.remove(
+        loading
+          .classList
+          .add(
             "hidden"
           );
 
+
+        if (
+          !result
+          ||
+          result.length
+          ===
+          0
+        ) {
+
+          myBooking =
+            null;
+
+
+          noBooking
+            .classList
+            .remove(
+              "hidden"
+            );
+
+
           return;
+
         }
 
 
@@ -1392,219 +2544,346 @@
           result[0];
 
 
-        document.getElementById(
-          "myBookingDate"
-        ).textContent =
-          formatDate(
-            myBooking.slot_date
+        document
+          .getElementById(
+            "myBookingDate"
+          )
+          .textContent =
+            formatDate(
+              myBooking.slot_date
+            );
+
+
+        document
+          .getElementById(
+            "myBookingTime"
+          )
+          .textContent =
+            formatTime(
+              myBooking.slot_time
+            );
+
+
+        card
+          .classList
+          .remove(
+            "hidden"
           );
 
+      }
 
-        document.getElementById(
-          "myBookingTime"
-        ).textContent =
-          formatTime(
-            myBooking.slot_time
-          );
+      catch (error) {
 
-
-        card.classList.remove(
-          "hidden"
+        console.error(
+          error
         );
 
-      } catch (error) {
-        console.error(error);
 
         loading.textContent =
           "Не удалось загрузить запись.";
+
       }
+
     }
 
 
-    document.getElementById(
-      "cancelBooking"
-    ).addEventListener(
-      "click",
-      async () => {
+    /* -------------------------
+       CANCEL
+    -------------------------- */
 
-        if (
-          !myBooking ||
-          !user?.id
-        ) {
-          return;
-        }
+    document
+      .getElementById(
+        "cancelBooking"
+      )
+      .addEventListener(
+        "click",
+        async () => {
 
+          if (
+            !myBooking
+            ||
+            !user?.id
+          ) {
 
-        const confirmed =
-          confirm(
-            "Точно отменить запись на созвон?"
-          );
+            return;
 
-
-        if (!confirmed) {
-          return;
-        }
-
-
-        try {
-          const response =
-            await fetch(
-              `${SUPABASE_URL}/rest/v1/rpc/cancel_my_booking`,
-              {
-                method: "POST",
-
-                headers: {
-                  apikey:
-                    SUPABASE_KEY,
-
-                  Authorization:
-                    `Bearer ${SUPABASE_KEY}`,
-
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify({
-                    p_slot_id:
-                      myBooking.id,
-
-                    p_telegram_id:
-                      Number(user.id)
-                  })
-              }
-            );
-
-
-          if (!response.ok) {
-            throw new Error(
-              await response.text()
-            );
           }
 
 
-          const success =
-            await response.json();
-
-
-          if (!success) {
-            alert(
-              "Не удалось отменить запись."
+          const confirmed =
+            confirm(
+              "Точно отменить запись на созвон?"
             );
 
+
+          if (!confirmed) {
             return;
           }
 
 
-          myBooking =
-            null;
+          const button =
+            document.getElementById(
+              "cancelBooking"
+            );
 
 
-          await loadMyBooking();
+          button.disabled =
+            true;
 
-          await loadSlots();
 
-        } catch (error) {
-          console.error(error);
+          button.textContent =
+            "Отменяю...";
 
-          alert(
-            "Произошла ошибка."
-          );
+
+          try {
+
+            const response =
+              await fetch(
+
+                `${SUPABASE_URL}/rest/v1/rpc/cancel_my_booking`,
+
+                {
+
+                  method:
+                    "POST",
+
+
+                  headers: {
+
+                    apikey:
+                      SUPABASE_KEY,
+
+
+                    Authorization:
+                      `Bearer ${SUPABASE_KEY}`,
+
+
+                    "Content-Type":
+                      "application/json"
+
+                  },
+
+
+                  body:
+                    JSON.stringify({
+
+                      p_slot_id:
+                        myBooking.id,
+
+
+                      p_telegram_id:
+                        Number(
+                          user.id
+                        )
+
+                    })
+
+                }
+
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                await response.text()
+              );
+
+            }
+
+
+            const success =
+              await response.json();
+
+
+            if (!success) {
+
+              alert(
+                "Не удалось отменить запись."
+              );
+
+
+              return;
+
+            }
+
+
+            tg
+              ?.HapticFeedback
+              ?.notificationOccurred(
+                "success"
+              );
+
+
+            myBooking =
+              null;
+
+
+            await loadMyBooking();
+
+
+            await loadSlots();
+
+          }
+
+          catch (error) {
+
+            console.error(
+              error
+            );
+
+
+            alert(
+              "Произошла ошибка."
+            );
+
+          }
+
+          finally {
+
+            button.disabled =
+              false;
+
+
+            button.textContent =
+              "Отменить запись";
+
+          }
+
         }
-      }
-    );
+      );
 
 
-    function setActiveTab(active) {
+    /* -------------------------
+       NAVIGATION
+    -------------------------- */
+
+    function setActiveTab(
+      active
+    ) {
+
       document
         .getElementById(
           "bookingTab"
         )
-        .classList.toggle(
+        .classList
+        .toggle(
           "active",
-          active === "booking"
+          active
+          ===
+          "booking"
         );
+
 
       document
         .getElementById(
           "myBookingTab"
         )
-        .classList.toggle(
+        .classList
+        .toggle(
           "active",
-          active === "my"
+          active
+          ===
+          "my"
         );
+
     }
 
 
     function showBookingPage() {
+
       document
         .getElementById(
           "myBookingPage"
         )
-        .classList.add(
+        .classList
+        .add(
           "hidden"
         );
+
 
       document
         .getElementById(
           "bookingPage"
         )
-        .classList.remove(
+        .classList
+        .remove(
           "hidden"
         );
+
 
       setActiveTab(
         "booking"
       );
 
+
       loadSlots();
+
     }
 
 
     function showMyBookingPage() {
+
       document
         .getElementById(
           "bookingPage"
         )
-        .classList.add(
+        .classList
+        .add(
           "hidden"
         );
+
 
       document
         .getElementById(
           "myBookingPage"
         )
-        .classList.remove(
+        .classList
+        .remove(
           "hidden"
         );
+
 
       setActiveTab(
         "my"
       );
 
+
       loadMyBooking();
+
     }
 
 
-    document.getElementById(
-      "bookingTab"
-    ).addEventListener(
-      "click",
-      showBookingPage
-    );
+    document
+      .getElementById(
+        "bookingTab"
+      )
+      .addEventListener(
+        "click",
+        showBookingPage
+      );
 
 
-    document.getElementById(
-      "myBookingTab"
-    ).addEventListener(
-      "click",
-      showMyBookingPage
-    );
+    document
+      .getElementById(
+        "myBookingTab"
+      )
+      .addEventListener(
+        "click",
+        showMyBookingPage
+      );
 
+
+    /* -------------------------
+       START
+    -------------------------- */
 
     if (user?.id) {
+
       loadSlots();
+
     }
+
   </script>
 
 </body>
